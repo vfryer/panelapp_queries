@@ -1,12 +1,25 @@
 # panelapp_queries
-Coding projects to query data in PanelApp
+Coding projects to query data in PanelApp.
 
 Current aims (24/05/17):
 
-1. PanelApp Query to return all current versions of panels within PanelApp and status of all genes within each panel
+1. PanelApp Query (panelapp_panels_curr_version.py) to return all current versions of panels within PanelApp and status of all genes within each panel
+  - output as MS Excel file
   - this will then be used to create a pie chart for all green/amber/red/unknown status genes currently
-  - documentation for script(s)
+  - documentation for script
+ 
+2. Python script that will compare the current PanelApp versions with a previous version (specified output from panelapp_panels_curr_version.py) and output an Excel file for each panel of:
+  - total red/amber/green/unknown genes
+  - ?status unchanged
+  - red -> green genes
+  - green -> red genes (?arguably green -> anything other than green)
+  - new genes
+  - documentation for script (ensure the user can input the two scripts to be compared using sys.argv)
 
-2. PanelApp Query to return all versions of all panels, with status of all genes within each version
-  - this will then be used to create a bar chart over time plotting the additions/subtractions of genes for a/each panel
-  - documetation for script(s)
+3. PanelApp Query that will compare the status of genes in v0.0 panel (if it exists) with current panel. If a v0.0 doesn't exist, compare current version with first version that does contain data.
+  - total red/amber/green/unknown genes
+  - ?status unchanged
+  - red -> green genes
+  - green -> red genes (?arguably green -> anything other than green)
+  - new genes
+  - documentation for script (ensure the user can input the two scripts to be compared using sys.argv)
