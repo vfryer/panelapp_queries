@@ -1,52 +1,31 @@
-"""
-Take two Excel files and output the differences between the two versions for each panel
+import pandas as pd
+import datetime
 
-"""
-import json,requests,sys,datetime,openpyxl
+todays_date = datetime.datetime.now().strftime("%Y%m%d")
+
+# open the file
+prev_panels = pd.read_excel(r"C:\Users\Verity Fryer\PyCharmProjects\panelapp_queries\outputs\panel_versions_list_20170523_test.xlsx")
+curr_panels = pd.read_excel(r"C:\Users\Verity Fryer\PyCharmProjects\panelapp_queries\outputs\panel_versions_list_20170525_test.xlsx")
+
+df_inner = pd.merge(curr_panels,prev_panels,on=['Panel Id'], how='inner')
+df_inner = df_inner.drop(['Panel Name_y'],axis=1)
+print(df_inner)
+
+df_left_if_null = pd.merge(curr_panels,prev_panels,on=['Panel Id'], how='left')
+df_left_if_null = df_left_if_null[df_left_if_null['Panel Name_y'].isnull()]
+df_left_if_null = df_left_if_null.drop(['Panel Name_y','Version Number_y'],axis=1)
+print(df_left_if_null)
+
+df_right_if_null = pd.merge(curr_panels,prev_panels,on=['Panel Id'], how='right')
+df_right_if_null = df_right_if_null[df_right_if_null['Panel Name_x'].isnull()]
+df_right_if_null = df_right_if_null.drop(['Panel Name_x','Version Number_x'],axis=1)
+print(df_right_if_null)
+
+writer = pd.ExcelWriter('output_' + todays_date + '.xlsx')
+df_inner.to_excel(writer,'Existing panels')
+df_left_if_null.to_excel(writer,'Obsolete panels')
+df_right_if_null.to_excel(writer,'New panels')
+writer.save()
 
 
-# The user can input the filename of the previous version to be compared at the command line
-# panels_prev = sys.argv[1]
-panels_prev = r"C:\Users\Verity Fryer\PyCharmProjects\panelapp_queries\outputs\panel_versions_list_20170523.xlsx"
 
-from openpyxl import load_workbook
-wb = load_workbook(panels_prev)
-
-sheet = wb['Panels']
-
-for row in range(2, sheet.max_row + 1):
-    panel_name_prev = sheet['A' + str(row)].value
-    panel_id_prev = sheet['B' + str(row)].value
-    panel_version_prev = sheet['C' + str(row)].value
-    print(panel_name_prev,panel_id_prev,panel_version_prev)
-
-
-# open current panels version
-# capture current version number for each panel
-# for each panel in the current version, find the corresponding panel in the previous version
-# if a panel doesn't exist in the previous version, append to the end of the file
-# capture date of current version
-# capture total_genes_curr
-
-# open previous panels version
-# capture previous version number for each panel
-# if a panel no longer exists in the previous version, this still needs to be recorded
-# capture date of previous version
-# capture total_genes_prev
-
-# for a gene within in a panel
-#    if gene_name in prev but not curr:
-#        retired_genes +1
-#    elif gene_name in curr but not prev:
-#        new_genes +1
-#    elif gene_status_prev == gene_status_curr:
-#        unchanged_count +1
-#    elif gene_status_prev != gene_status_curr:
-#         if gene_status_prev == "HighEvidence" and gene_status_curr == "LowEvidence":
-#              green_to_red +1
-#         elif gene_status_prev == "LowEvidence" and gene_status_curr == "HighEvidence"
-#              red_to_green +1
-#         else:
-#             pass
-#     else:
-#          pass
