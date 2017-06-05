@@ -12,7 +12,7 @@ import requests,json,xlsxwriter,datetime
 todays_date = datetime.datetime.now().strftime("%Y%m%d")
 # print(todays_date)
 
-workbook = xlsxwriter.Workbook('panel_versions_list' + todays_date + '.xlsx')
+workbook = xlsxwriter.Workbook('panel_versions_list_' + todays_date + '.xlsx')
 worksheet = workbook.add_worksheet('Panel_versions')
 
 # Add a bold format to use to highlight cells.
