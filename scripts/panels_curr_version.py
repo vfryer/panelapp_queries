@@ -1,7 +1,7 @@
 """
 Title: panels_curr_version.py
-Version: 
-Release Date: 
+Version: 1.0
+Release Date: 14 June 2017 
 Author: VFryer
 The following code retrieves all panel names from PanelApp, with current panel versions.
 Usage: python panels_curr_version.py <output file location>
