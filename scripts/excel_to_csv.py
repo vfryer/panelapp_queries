@@ -1,5 +1,7 @@
 """
 Convert an Excel file into a csv file.
+Author: VFryer (verity.fryer@nhs.net)
+Release: 1.0
 usage: python excel_to_csv.py <Excel file to be converted>
 """
 import sys, os
