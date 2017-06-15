@@ -1,170 +1,75 @@
 """
 Ttle: panels_comparison.py
-Version: v1.0
-Release Date: 26/05/2017
+Version: 
+Release Date: 
 Author: VFryer
 This program compares the current and previous panel versions lists (.csv files)
 Output will be count of panels updated/unchanged/retired/created
 """
 
 import pandas as pd
-import datetime
+import datetime, sys, xlsxwriter
 
 todays_date = datetime.datetime.now().strftime("%Y%m%d")
 
-# open the current versions file, iterate through and compare to the previous versions file
+new_panel_count = 0
+unchanged_count = 0
+updated_count = 0
 
-# new_panel_count = 0
-# unchanged_count = 0
-# updated_count = 0
+# convert the current version file and previous panel versions file into dataframes to be compared
 
-# Using PanelID in curr file;
-# if Panel_ID_curr exists in prev_panel_list:
-#    check curr_version_num against prev_version_num
-#    if curr_version_num == prev_version_num:
-#        Add 1 to unchanged_count
-#    else:
-#        Add 1 to updated_list
-# else:
-#    panel_ID_curr is new
-#    Add 1 to new_panel_count
+df_curr = pd.read_csv(sys.argv[1])
+df_prev = pd.read_csv(sys.argv[2])
 
+df = pd.merge(df_curr,df_prev, on=["Panel ID", "Panel Name"], how="outer", suffixes=[' Current',' Previous'], indicator=True)
 
-# retired_count = 0
-# Then have to check the lists in the opposite direction to check for any panel_id in prev_list not in curr_list
+writer = pd.ExcelWriter('panels_status_' + todays_date + '.xlsx', engine='xlsxwriter')
 
-# print new_count, updated_count, retired_count, unchanged_count
-"""
-The following code retrieves the name of each panel in PanelApp, the number of genes in each panel, and the status of each gene within that panel ('Green', 'Amber' or 'Red') 
+# create dataframe of panels that are in both lists
+existing_panels = df[df['_merge'].str.contains("both")]
 
+# need to add ability to split existing_panels list into two lists:
+unchanged_panels = existing_panels.loc[existing_panels['Version Number Current'] == existing_panels['Version Number Previous']]
+unchanged_panels = unchanged_panels.drop('_merge', 1)
+unchanged_panels.set_index('Panel Name', inplace=True)
+unchanged_panels.to_excel(writer,sheet_name='Unchanged Panels')
 
-import requests, json, xlsxwriter, datetime
+unchanged_panels_count = len(unchanged_panels.index)
+print(unchanged_panels_count)
 
-todays_date = datetime.datetime.now().strftime("%Y%m%d")
+updated_panels = existing_panels.loc[existing_panels['Version Number Current'] != existing_panels['Version Number Previous']]
+updated_panels = updated_panels.drop('_merge', 1)
+updated_panels.set_index('Panel Name', inplace=True)
+updated_panels.to_excel(writer,sheet_name='Updated Panels')
 
-# Create an Excel spreadsheet ready to be populated with data
-workbook = xlsxwriter.Workbook('panels_status_'+ todays_date + '.xlsx')
-worksheet1 = workbook.add_worksheet('Panels')
-worksheet2 = workbook.add_worksheet('Genes')
-# Add a bold format to use to highlight cells.
-bold = workbook.add_format({'bold': True})
+updated_panels_count = len(updated_panels.index)
+print(updated_panels_count)
 
-# Add some data headers.
-worksheet1.write('A1', 'Panel Name', bold)
-worksheet1.write('B1', 'Version Number', bold)
-worksheet1.write('C1', 'Total Genes', bold)
-worksheet1.write('D1', 'Green Genes', bold)
-worksheet1.write('E1', 'Amber Genes', bold)
-worksheet1.write('F1', 'Red Genes', bold)
-worksheet1.write('G1', 'Unknown Genes', bold)
+existing_panels = existing_panels.drop('_merge', 1)
+existing_panels.set_index('Panel Name', inplace=True)
+existing_panels.to_excel(writer,sheet_name='Existing Panels')
 
-worksheet2.write('A1', 'Panel Name', bold)
-worksheet2.write('B1', 'Gene Name', bold)
-worksheet2.write('C1', 'Gene Status', bold)
+existing_panels_count = len(existing_panels.index)
+print(existing_panels_count)
 
-# Header of Excel file is row 0, start adding information to Excel at row 1.
-# Columns will start at column 0
-row = 1
-row2 = 1
-col = 0
+# create a dataframe of panels only in previous list but not current
+retired_panels = df[df['_merge'].str.contains("right_only")]
+retired_panels = retired_panels.drop('_merge', 1)
+retired_panels = retired_panels.drop('Version Number Current', 1)
+retired_panels.set_index('Panel Name', inplace=True)
+retired_panels.to_excel(writer,sheet_name='Retired Panels')
 
-# iterate through the list of dictionaries, retrieving panel name, panel version, panel id (to be used to search each panel) and the number of genes per panel
-comp_file = pd.read_excel(r"C:\Users\Verity Fryer\PyCharmProjects\panelapp_queries\scripts\output_20170526.xlsx",sheetname='Existing panels', index_col=1)
+retired_panels_count = len(retired_panels.index)
+print(retired_panels_count)
 
-for row in comp_file.iterrows():
-    panel_id = row(['Panel Id'])
-    print(panel_id)
-    version_num = row(['Version Number'])
-    print(version_num)
-    try:
-        get_panel_version = requests.get('https://bioinfo.extge.co.uk/crowdsourcing/WebServices/get_panel/' + panel_id + '/?version=' + str(
-                version_num))
-        version_data = get_panel_version.json()
-        print(version_data)
-        # print(panel_name + ' v' + str(version_num))
+# create a dataframe of panels in current list but not previous list
+new_panels = df[df['_merge'].str.contains("left_only")]
+new_panels = new_panels.drop('_merge', 1)
+new_panels = new_panels.drop('Version Number Previous', 1)
+new_panels.set_index('Panel Name', inplace=True)
+new_panels.to_excel(writer,sheet_name='New Panels')
 
-        gene_info = version_data['result']['Genes']
+new_panels_count = len(new_panels.index)
+print(new_panels_count)
 
-        panel_name = item["Name"]
-        panel_version = item["CurrentVersion"]
-        panel_id = item["Panel_Id"]
-        panel_total_genes = item["Number_of_Genes"]
-
-        gene_info = version_data['result']['Genes']
-
-        # as the genes will be counted during iteration, set all counters to 0
-        green_count = 0
-        red_count = 0
-        amber_count = 0
-        unknown_count = 0
-        # retrieve gene and gene status information for all genes within the panel
-
-        for gene in gene_info:
-            gene_symbol = gene['GeneSymbol']
-            gene_confidence = gene['LevelOfConfidence']
-            # print(gene_symbol, gene_confidence)
-            if gene_confidence == "LowEvidence":
-                gene_status = "Red"
-                red_count = red_count + 1
-            elif gene_confidence == "HighEvidence":
-                gene_status = "Green"
-                green_count = green_count + 1
-            elif gene_confidence == "ModerateEvidence":
-                gene_status = "Amber"
-                amber_count = amber_count + 1
-            else:
-                gene_status = "Unknown"
-                unknown_count = unknown_count + 1
-
-            worksheet2.write(row2, col, panel_name)
-            worksheet2.write(row2, col+1, gene_symbol)
-            worksheet2.write(row2, col+2, gene_status)
-            row2 = row2+1
-
-        panel_count = panel_count + 1
-
-        if panel_total_genes == None:
-            panel_total_genes = 0
-        else:
-            pass
-        print(panel_name + " v" + panel_version)  # + " Total genes: " + str(panel_total_genes))
-#  handle non-retrieval of data from endpoint
-    except:
-        print(panel_id + " panel could not be found in PanelApp.")
-
-#    calculated_gene_tot = (green_count + red_count + amber_count + unknown_count)
-
-    worksheet1.write(row, col, panel_name)
-    worksheet1.write(row, col+1, panel_version)
-    worksheet1.write(row, col+2, panel_total_genes)
-    worksheet1.write(row, col+3, green_count)
-    worksheet1.write(row, col+4, amber_count)
-    worksheet1.write(row, col+5, red_count)
-    worksheet1.write(row, col+6, unknown_count)
-    row = row+1
-
-# print("Green genes: " + str(green_count) + "\nRed genes: " + str(red_count) + "\nAmber genes: " + str(amber_count) + "\nUnknown genes: " + str(unknown_count))
-# print("Calculated gene total: " +str(calculated_gene_tot))
-
-'''
-To check that all genes are being captured, compare total number of genes for a panel
-calculated by adding together all the green, amber, red and unknown genes)
-against the number of genes associated with the panel.
-
-    if panel_total_genes == None and calculated_gene_tot == 0:
-        pass
-    elif calculated_gene_tot != panel_total_genes:
-        print(panel_name + " v" + panel_version + " Total genes: " + str(panel_total_genes))
-        print("Genes totals don't match!")
-        print("Green genes: " + str(green_count) + "\nRed genes: " + str(red_count) + "\nAmber genes: " + str(
-            amber_count) + "\nUnknown genes: " + str(unknown_count))
-        print("Calculated gene total: " + str(calculated_gene_tot))
-    else:
-        pass
-'''
-
-workbook.close()
-
-# Print the number of panels to signal the end of the script and the number of rows to be expected in the Excel file
-print("Number of panels: " + str(len(panel_list)))
-"""
+writer.save()
