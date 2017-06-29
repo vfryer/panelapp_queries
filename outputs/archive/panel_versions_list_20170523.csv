@@ -24,7 +24,7 @@ Extreme early-onset hypertension,553f9697bb5a1616e5ed45d4,1.2
 IUGR and IGF abnormalities,553f9744bb5a1616e5ed45e8,1.7
 Familial diabetes,553f9745bb5a1616e5ed45e9,1.6
 Hyperinsulinism,553f9781bb5a1616e5ed45f4,1.1
-Corneal abnormalities,553f979ebb5a1616e5ed45f6,1
+Corneal abnormalities,553f979ebb5a1616e5ed45f6,1.0
 Cataracts,553f979fbb5a1616e5ed45f8,1.9
 Anophthalmia/microphthamia,553f97abbb5a1616e5ed45f9,1.5
 Isomerism and laterality disorders,5540ef61bb5a160c33b964da,0.7
@@ -35,9 +35,9 @@ Genetic Epilepsies with Febrile Seizures Plus (GEFS+),5549fcd4bb5a167e4ccd1eb9,1
 Familial Genetic Generalised Epilepsies,5549fcdfbb5a167e4ccd1ebb,1.17
 Familial Focal Epilepsies,5549fce0bb5a167e4ccd1ebc,1.5
 Chondrodysplasia punctata,554a0ac9bb5a167e4ccd1ec0,1.1
-Stickler syndrome,554a0ac9bb5a167e4ccd1ec1,1.2
+Stickler syndrome,554a0ac9bb5a167e4ccd1ec1,1.20
 Thoracic dystrophies,554a0ac9bb5a167e4ccd1ec2,0.5
-Glaucoma (developmental),55507b25bb5a161bf644a3b2,1
+Glaucoma (developmental),55507b25bb5a161bf644a3b2,1.0
 Ocular coloboma,5550a166bb5a161bf644a3b6,1.4
 Severe familial anorexia,5550b7bebb5a161bf644a3bc,1.1
 Cerebral folate deficiency,55537918bb5a161bf644a3c7,1.1
@@ -83,7 +83,7 @@ Familial breast cancer,55b62bc422c1fc05fc7a1857,1.2
 Rhabdomyolysis and metabolic muscle disorders,55b63d7f22c1fc05fc7a185b,1.4
 Familial rhabdomyosarcoma,55b7337f22c1fc05fd2345ba,0.4
 Arthrogryposis,55b75d5b22c1fc05fd2345c9,2.6
-Distal myopathies,55b7a0bb22c1fc05fd2345d1,1
+Distal myopathies,55b7a0bb22c1fc05fd2345d1,1.0
 Limb girdle muscular dystrophy,55b7a65322c1fc05fc7a1869,1.3
 Congenital adrenal hypoplasia,55bf785822c1fc0fe45530bf,1.2
 Familial or syndromic hypoparathyroidism,55bf826222c1fc0fe45530c1,1.4
@@ -100,7 +100,7 @@ Familial hypercholesterolaemia,561518be22c1fc212900fb84,1.9
 Generalised pustular psoriasis,5616435a22c1fc212900fbd1,1.2
 Ectodermal dysplasia without a known gene mutation,561677af22c1fc212a6db65d,1.1
 Autosomal recessive congenital ichthyosis,562e5d2622c1fc582756e3b5,1.1
-Palmoplantar keratoderma and erythrokeratodermas,562f5e7822c1fc582756e3bb,1
+Palmoplantar keratoderma and erythrokeratodermas,562f5e7822c1fc582756e3bb,1.0
 Epidermolysis bullosa,56310b9a22c1fc58285b282c,1.1
 Inherited complement deficiency,56323bce22c1fc58285b2837,0.8
 Infantile nystagmus,563242a422c1fc582756e3cd,1.1
@@ -114,19 +114,19 @@ Holoprosencephaly,568e87e022c1fc1c79ca1754,0.18
 Rare multisystem ciliopathy disorders,568ea01e22c1fc1c78b6715d,1.26
 Peeling skin syndrome,568ea06122c1fc1c78b67161,1.1
 Primary Microcephaly - Microcephalic Dwarfism Spectrum,568f860222c1fc1c79ca1769,1.6
-Cerebellar hypoplasia,568f871422c1fc1c79ca176d,1
+Cerebellar hypoplasia,568f871422c1fc1c79ca176d,1.0
 Malformations of cortical development,568f8ba422c1fc1c79ca1774,1.116
 Intracerebral calcification disorders,568f8db422c1fc1c79ca1777,1.6
 Inherited white matter disorders,568f920822c1fc1c79ca177a,1.6
 Familial cerebral small vessel disease,5693787622c1fc25158f3c9a,1.1
-Non-syndromic hypotrichosis,56937d0d22c1fc25158f3c9e,1
+Non-syndromic hypotrichosis,56937d0d22c1fc25158f3c9e,1.0
 Disorders of sex development,569380ac22c1fc251660faf8,1.1
 Fetal structural CNS abnormalities,56938f1a22c1fc251660fb16,0.3
 Kyphoscoliotic Ehlers-Danlos syndrome,5693932722c1fc251660fb19,1.1
 Unexplained skeletal dysplasia,5693952f22c1fc251660fb1e,1.32
 Unexplained kidney failure in young people,5693974122c1fc251660fb1f,1.3
 Rhombencephalosynapsis,56939e2e22c1fc25158f3cc5,0.3
-Structural basal ganglia disorders,56ba024322c1fc5025762b4d,1
+Structural basal ganglia disorders,56ba024322c1fc5025762b4d,1.0
 Neurotransmitter disorders,56ba025922c1fc5025762b4e,0.17
 Gastrointestinal epithelial barrier disorders,56ba026422c1fc5025762b4f,0.6
 Infantile enterocolitis & monogenic inflammatory bowel disease,56ba026c22c1fc5025762b50,1.9
@@ -142,21 +142,21 @@ Ocular and oculo-cutaneous albinism,5763f1118f620350a22bccda,1.5
 Undiagnosed metabolic disorders,5763f1518f620350a22bccdb,1.49
 Familial dysautonomia,5763f1d68f620350a22bccdc,1.3
 Regional overgrowth disorders,5763f2348f620350a1996043,1.2
-Congenital hypothyroidism or thyroid agenesis,5763f2938f620350a1996046,1
-Familial prostate cancer,5763f2bf8f620350a1996047,1
-Multiple lipomas,5763f2ea8f620350a1996048,1
-Pityriasis rubra pilaris,5763f3038f620350a1996049,1
+Congenital hypothyroidism or thyroid agenesis,5763f2938f620350a1996046,1.0
+Familial prostate cancer,5763f2bf8f620350a1996047,1.0
+Multiple lipomas,5763f2ea8f620350a1996048,1.0
+Pityriasis rubra pilaris,5763f3038f620350a1996049,1.0
 Inherited bleeding disorders,5763f32a8f620350a22bccde,1.14
 Hydrocephalus,5763f35c8f620350a22bccdf,0.86
-Currarino triad,5763f3788f620350a199604a,1
-PHACE(S) syndrome,5763f4408f620350a22bcce1,1
+Currarino triad,5763f3788f620350a199604a,1.0
+PHACE(S) syndrome,5763f4408f620350a22bcce1,1.0
 Radial dysplasia,5763f4588f620350a199604e,0.188
 Fetal hydrops,5763f4868f620350a199604f,1.9
 Neonatal or paediatric intensive care admission with a likely monogenic cause,5763f4f18f620350a1996051,0.3
 Ultra-rare undescribed monogenic disorders,5763f5688f620350a22bcce3,0.1
 Familial disseminated superficial actinic porokeratosis,5763f6048f620350a1996052,0.16
 Sudden death in young people,5763f6508f620350a1996055,1.4
-Resistance to thyroid hormone,576cd44c8f6203609632be80,1
+Resistance to thyroid hormone,576cd44c8f6203609632be80,1.0
 Young adult onset cancer,576cd7b18f6203609632be81,0.12
 Inherited non-medullary thyroid cancer,576cd7ca8f6203609632be82,0.5
 Non-syndromic familial congenital anorectal malformations,576cd7e38f62036097d6cc9c,0.2
@@ -168,8 +168,8 @@ Unexplained monogenic fetal disorders,57c59f3f8f62030d4e7e01be,0.2
 Neurofibromatosis Type 1,57c5b45b8f62030d5014a949,1.12
 Single autosomal recessive mutation in rare disease,57c841c58f620314a4788738,0.1
 Epilepsy Plus,57d15bb28f6203284d610aaa,0.8
-Familial Neural Tube Defects,57e3df7e8f62034b82c0d332,1
-Severe hypertriglyceridaemia,57eab3658f620356ef5e4010,1
+Familial Neural Tube Defects,57e3df7e8f62034b82c0d332,1.0
+Severe hypertriglyceridaemia,57eab3658f620356ef5e4010,1.0
 Lymphatic Disorders,57ee82ef8f62035c9b2d0487,1.7
 Deafness and congenital structural abnormalities,57f4dbd18f62036d37cfe4e4,1.1
 Parkinson Disease and Complex Parkinsonism,58078e6e8f62030e233a8157,1.4
@@ -183,14 +183,14 @@ Disseminated non-tuberculous mycobacterial infection,5885eb948f620309044f8a0b,0.
 Ehlers-Danlos syndromes,588728f38f62030cf7152165,0.397
 BRIDGE_SPEED_NEURO_v2.0_20160416,5899ea6e8f62032082874547,0.3
 Cytopaenias and congenital anaemias,58a70e858f62037e8779b2e8,1.32
-Amelogenesis Imperfecta,58c7f3c78f620328d77ce70e,0
+Amelogenesis Imperfecta,58c7f3c78f620328d77ce70e,0.0
 Familial Hirschprungs Disease,58c7f5008f620328d77ce70f,0.8
-Short QT syndrome,58c7f6858f620328d77ce711,0
-Pulmonary arterial hypertension,58c7f8a78f62033482c42716,0
-Hereditary Erythrocytosis,58c7fba38f6203345887d4f5,1
+Short QT syndrome,58c7f6858f620328d77ce711,0.0
+Pulmonary arterial hypertension,58c7f8a78f62033482c42716,0.0
+Hereditary Erythrocytosis,58c7fba38f6203345887d4f5,1.0
 Monogenic viral susceptibility,58c7fd7f8f6203413360f1b6,0.4
 Unprovoked Thrombosis before 40 years of age,58c8048d8f62033f90c2716c,0.1
-Primary Membranoproliferative Glomerulonephritis,58c805938f6203413360f1cb,0
-Ductal plate malformation (DPM),58c8066b8f6203413360f1cf,0
+Primary Membranoproliferative Glomerulonephritis,58c805938f6203413360f1cb,0.0
+Ductal plate malformation (DPM),58c8066b8f6203413360f1cf,0.0
 Cancer Programme Germline Gene Panel,58ca82398f62032a3e38b3a0,0.2
 GI tract,591444928f620348d4b20c16,1.2
