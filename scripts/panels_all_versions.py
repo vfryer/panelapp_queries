@@ -4,7 +4,7 @@ Retrieve the gene names and gene status for all genes within all version of thos
 Output an MS Excel file containing two tabs.
 First tab contains panel name, panel id, panel version, gen name and the level of confidence genes in that version
 Second tab contains the count of red, amber, green and unknown genes for each version of each panel.
-N.B. This script takes a long time to execute (> 1hr 20 mins)
+N.B. This script takes a long time to execute (> 1hr 20 mins) and only finds those scripts with version up to two d.p.
 """
 
 import requests,json,xlsxwriter,datetime

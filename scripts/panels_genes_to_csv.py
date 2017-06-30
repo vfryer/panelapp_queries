@@ -22,7 +22,7 @@ panel_data = r.json()
 
 panel_list = panel_data["result"]
 
-filename = os.path.join(out_path, 'panel_versions_list_' + todays_date + '.csv')
+filename = os.path.join(out_path, 'panel_genes_list_' + todays_date + '.csv')
 
 csv_file = open(filename, 'w')
 writer = csv.writer(csv_file, delimiter=",")
