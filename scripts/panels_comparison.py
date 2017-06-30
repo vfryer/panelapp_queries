@@ -9,7 +9,7 @@ Usage: python panels_comparison.py <current_panels_file> <previous_panels_file>
 """
 
 import pandas as pd
-import datetime, sys
+import datetime
 
 todays_date = datetime.datetime.now().strftime("%Y%m%d")
 
