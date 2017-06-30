@@ -76,8 +76,8 @@ for panel in panel_list:
             writer.writerow(row)
 
             # write data to database for subsequent analysis
-            #cur.execute("INSERT INTO panelapp_info VALUES (?,?,?,?,?,?,?)",(datestamp,panel_name,panel_id,version_num,gene_symbol,gene_status,moi))
-            #conn.commit()
+            cur.execute("INSERT INTO panelapp_info VALUES (?,?,?,?,?,?,?)",(datestamp,panel_name,panel_id,version_num,gene_symbol,gene_status,moi))
+            conn.commit()
 
     except:
         # if the try loop fails for any reason, inform user
