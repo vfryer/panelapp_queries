@@ -10,9 +10,10 @@ Usage: python panels_genes_curr.py <output file location>
 import requests, json, csv, datetime, sys, os
 import sqlite3, time, pandas as pd
 
+# create a connection to the specified SQLite database
 conn = sqlite3.connect("outputs/PanelApp_Data.db")
 cur = conn.cursor()
-'''
+
 # save today's date to use in the filename to record a snapshot of panel versions on a weekly basis
 todays_date = datetime.datetime.now().strftime("%Y%m%d")
 datestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -82,18 +83,19 @@ for panel in panel_list:
         # if the try loop fails for any reason, inform user
         print("Panel not found")
 
-'''
+prev_version = "2017-05"
+curr_version = "2017-06"
 
 def new_panels():
     # any panels that exist in latest panel version capture that did not exist in the previous panel capture
-    cur.execute("SELECT DISTINCT panel_name FROM panelapp_info WHERE Datestamp LIKE '2017-06%' AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE '2017-05%')")
+    cur.execute("SELECT DISTINCT panel_name FROM panelapp_info WHERE Datestamp LIKE ? AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE ?)",(curr_version+'%',prev_version+'%'))
     data = cur.fetchall()
     print("New panels: ")
     print(data)
 
 def del_panels():
     # any panels that do not exist in latest panel version capture vs. a previously panel capture
-    cur.execute("SELECT DISTINCT panel_name FROM panelapp_info WHERE Datestamp LIKE '2017-05%' AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE '2017-06%')")
+    cur.execute("SELECT DISTINCT panel_name FROM panelapp_info WHERE Datestamp LIKE ? AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE ?)",(prev_version+'%',curr_version+'%'))
     data = cur.fetchall()
     print("Retired panels: ")
     print(data)
@@ -122,15 +124,15 @@ def demoted_genes():
     print(demoted_df)
 
 def moi_change():
-    # any genes in panels v1.0 and higher, in which the mode of inheritance of the gene has changed
-    df1 = pd.read_sql_query("SELECT panel_name, gene_symbol, moi FROM panelapp_info WHERE Datestamp LIKE '2017-05%' AND version_num >=1", conn)
-    df2 = pd.read_sql_query("SELECT panel_name, gene_symbol, moi FROM panelapp_info WHERE Datestamp LIKE '2017-06%' AND gene_status = 'Green'", conn)
+    # any green genes in panels v1.0 and higher, in which the mode of inheritance of the gene has changed
+    df1 = pd.read_sql_query("SELECT panel_name, gene_symbol, moi, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05%' AND version_num >=1", conn)
+    df2 = pd.read_sql_query("SELECT panel_name, gene_symbol, moi, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-06%' AND gene_status = 'Green'", conn)
     print("MOI changed genes: ")
-    moi_change_df_prev = pd.merge(df1, df2, on=['Panel_Name','Gene_Symbol'], how='left')
-    moi_change_df_curr = pd.(df1, df2, on=['Panel_Name','Gene_Symbol'], how='right')
-
+    moi_change_df = pd.merge(df1, df2, on=['Panel_Name','Gene_Symbol'], how='inner')
+    moi_change_df['MOI_x'].fillna(value='NaN', inplace=True)
+    moi_change_df['MOI_y'].fillna(value='NaN', inplace=True)
+    moi_change_df = moi_change_df[moi_change_df.MOI_x != moi_change_df.MOI_y]
     print(moi_change_df)
-
 
 '''
 def update_data():
@@ -160,8 +162,6 @@ def delete_data():
         print(row)
 '''
 
-# datestamp_select()
-# prev_panels()
 new_panels()
 del_panels()
 promoted_panels()
@@ -173,6 +173,6 @@ moi_change()
 
 # Add a step to copy existing database into a back-up folder?
 
-# cur.close()
-# conn.close()
+cur.close()
+conn.close()
 
