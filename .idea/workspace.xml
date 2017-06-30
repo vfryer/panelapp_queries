@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cb1a58d6-20a8-46a9-b1c8-f7725031aad3" name="Default" comment="Amend version_num reference in panels_genes_to_csv.py">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/panels_all_versions.py" afterPath="$PROJECT_DIR$/scripts/panels_all_versions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/panels_genes_to_csv.py" afterPath="$PROJECT_DIR$/scripts/panels_genes_to_csv.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/panels_genes_curr.py" afterPath="$PROJECT_DIR$/scripts/panels_genes_curr.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -15,24 +15,14 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="450">
-      <file leaf-file-name="panels_genes_curr.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="panels_genes_curr.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scripts/panels_genes_curr.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1225">
-              <caret line="7" column="3" lean-forward="true" selection-start-line="7" selection-start-column="3" selection-end-line="7" selection-end-column="3" />
+            <state relative-caret-position="425">
+              <caret line="95" column="25" lean-forward="true" selection-start-line="95" selection-start-column="25" selection-end-line="95" selection-end-column="25" />
               <folding>
                 <element signature="e#253#298#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="panels_genes_to_csv.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/scripts/panels_genes_to_csv.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="6" column="61" lean-forward="false" selection-start-line="6" selection-start-column="61" selection-end-line="6" selection-end-column="61" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -72,11 +62,11 @@
         <option value="$PROJECT_DIR$/scripts/wip/all_panels_gene_status.py" />
         <option value="$PROJECT_DIR$/scripts/wip/sqlite_data.py" />
         <option value="$PROJECT_DIR$/scripts/csv_to_sqlite.py" />
-        <option value="$PROJECT_DIR$/scripts/panels_genes_curr.py" />
         <option value="$PROJECT_DIR$/scripts/panels_genes_curr_version.py" />
         <option value="$PROJECT_DIR$/scripts/panels_comparison.py" />
         <option value="$PROJECT_DIR$/scripts/panels_all_versions.py" />
         <option value="$PROJECT_DIR$/scripts/panels_genes_to_csv.py" />
+        <option value="$PROJECT_DIR$/scripts/panels_genes_curr.py" />
       </list>
     </option>
   </component>
@@ -549,7 +539,14 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="2" />
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/scripts/panels_genes_curr.py</url>
+          <line>182</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="3" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -704,21 +701,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/panels_genes_curr.py">
+    <entry file="file://$PROJECT_DIR$/scripts/panels_genes_to_csv.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1225">
-          <caret line="7" column="3" lean-forward="true" selection-start-line="7" selection-start-column="3" selection-end-line="7" selection-end-column="3" />
-          <folding>
-            <element signature="e#253#298#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="275">
+          <caret line="11" column="45" lean-forward="true" selection-start-line="11" selection-start-column="45" selection-end-line="11" selection-end-column="45" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/panels_genes_to_csv.py">
+    <entry file="file://$PROJECT_DIR$/scripts/panels_genes_curr.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="6" column="61" lean-forward="false" selection-start-line="6" selection-start-column="61" selection-end-line="6" selection-end-column="61" />
-          <folding />
+        <state relative-caret-position="425">
+          <caret line="95" column="25" lean-forward="true" selection-start-line="95" selection-start-column="25" selection-end-line="95" selection-end-column="25" />
+          <folding>
+            <element signature="e#253#298#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
