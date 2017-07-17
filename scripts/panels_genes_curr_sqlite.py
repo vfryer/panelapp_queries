@@ -26,7 +26,7 @@ except:
     sys.exit()
 
 out_path = sys.argv[1]
-'''
+
 # retrieve a list of all panel names
 r = requests.get('https://bioinfo.extge.co.uk/crowdsourcing/WebServices/list_panels')
 panel_data = r.json()
@@ -82,7 +82,7 @@ for panel in panel_list:
     except:
         # if the try loop fails for any reason, inform user
         print("Panel not found")
-'''
+
 prev_version = "2017-06-30"
 curr_version = "2017-07-10"
 
@@ -124,7 +124,7 @@ def new_genes():
     for row in data:
         print(row)
 
-def del_genes():
+#def del_genes():
     # any 'green' genes that have been removed from any v1+ panels
 
 def promoted_genes():
@@ -195,7 +195,7 @@ new_panels()
 del_panels()
 promoted_panels()
 new_genes()
-del_genes()
+#del_genes()
 promoted_genes()
 demoted_genes()
 moi_change()
