@@ -1,10 +1,10 @@
 """
-Title: panels_comparison_2.py
+Title: panels_comparison.py
 Version:
 Release Date:  
 Author: VFryer
 The following code compares data from two datasets (different timestamps) to generate Excel spreadsheet scontainngthe details of comparisons.
-Usage: python panels_comparison_2.py <output file location>
+Usage: python panels_comparison.py <output file location>
 """
 
 import requests, csv, datetime, sys, os
@@ -17,13 +17,15 @@ cur = conn.cursor()
 # retrieve all timestamps for data withoin the database and rpint to command line to allow user to select which data to compare
 cur.execute("SELECT DISTINCT Datestamp FROM panelapp_info")
 data = cur.fetchall()
+print("Data is available for the following dates:\n")
 for row in data:
     print(row)
+print('\n')
 
-#prev_version = input("Enter date of current PanelApp data capture in format yyyy-mm-dd:\n")
-prev_version = "2017-05-23"
-#curr_version = input("Enter data or previous PanelApp data capture in format yyyy-mm-dd:\n")
-curr_version = "2017-07-10"
+prev_version = input("Enter date of current PanelApp data capture in format yyyy-mm-dd:\n")
+#prev_version = "2017-05-23"
+curr_version = input("\nEnter data or previous PanelApp data capture in format yyyy-mm-dd:\n")
+#curr_version = "2017-07-10"
 
 
 # save today's date to use in the filename to record a snapshot of panel versions on a weekly basis
@@ -69,8 +71,14 @@ def del_panels():
 
 def promoted_panels():
     # any panels that have been promoted to v1.0 or higher from less than v1.0
-    df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND version_num <1", conn)
-    df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND version_num >=1", conn)
+    #df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND version_num <1", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num <1",(prev_version+'%', ))
+    data = cur.fetchall()
+    df1 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
+    #df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND version_num >=1", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num >1",(curr_version+'%', ))
+    data = cur.fetchall()
+    df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
     # print("Promoted panels: ")
     prom_panel_df = pd.merge(df1, df2, on='Panel_ID', how='inner')
     prom_panel_df = prom_panel_df.drop('Panel_Name_y',1)
@@ -80,8 +88,14 @@ def promoted_panels():
 
 def updated_v1_panels():
     # any panels previously v1+ that have been updated to a new version
-    df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND version_num >=1", conn)
-    df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND version_num >=1", conn)
+    #df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND version_num >=1", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num >=1",(prev_version+'%', ))
+    data = cur.fetchall()
+    df1 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
+    #df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND version_num >=1", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num >=1",(curr_version+'%', ))
+    data = cur.fetchall()
+    df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
     # print("Updated v1 panels: ")
     up_v1_df = pd.merge(df1, df2, on='Panel_ID', how='inner')
     up_v1_df = up_v1_df.drop('Panel_Name_y',1)
@@ -93,8 +107,14 @@ def updated_v1_panels():
 
 def updated_v0_panels():
     # any panels previously < v1 that have been updated to a new version that is still <v1
-    df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND version_num <1", conn)
-    df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND version_num <1", conn)
+    #df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND version_num <1", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num <1",(prev_version+'%', ))
+    data = cur.fetchall()
+    df1 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
+    #df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND version_num <1", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num <1",(curr_version+'%', ))
+    data = cur.fetchall()
+    df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
     # print("Updated v0 panels: ")
     up_v0_df = pd.merge(df1, df2, on='Panel_ID', how='inner')
     up_v0_df = up_v0_df.drop('Panel_Name_y',1)
@@ -106,8 +126,14 @@ def updated_v0_panels():
 
 def name_changed_panels():
     # any panels with a different name (but same panel ID) to previous panel version
-    df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%'", conn)
-    df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%'", conn)
+    #df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%'", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ?",(prev_version+'%', ))
+    data = cur.fetchall()
+    df1 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
+    #df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%'", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ?",(curr_version+'%', ))
+    data = cur.fetchall()
+    df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
     # print("Name changed panels: ")
     name_change_df = pd.merge(df1, df2, on='Panel_ID', how='inner')
     name_change_df = name_change_df[name_change_df.Panel_Name_x != name_change_df.Panel_Name_y]
@@ -140,10 +166,16 @@ def del_genes():
 
 def promoted_genes():
     # any genes within v1.0+ panels that are currently 'green' that were previously not 'green'
-    df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND gene_status != 'Green'", conn)
-    df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND gene_status = 'Green' AND version_num >=1", conn)
+    #df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND gene_status != 'Green'", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status != 'Green'",(prev_version+'%', ))
+    data = cur.fetchall()
+    df1 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Gene_Name','Status','Version_Num'])
+    #df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND gene_status = 'Green' AND version_num >=1", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status = 'Green'",(curr_version+'%', ))
+    data = cur.fetchall()
+    df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Gene_Name','Status','Version_Num'])
     # print("Promoted genes: ")
-    promoted_df = pd.merge(df1, df2, on=['Panel_ID','Gene_Symbol'], how='inner')
+    promoted_df = pd.merge(df1, df2, on=['Panel_ID','Gene_Name'], how='inner')
     promoted_df = promoted_df.drop('Panel_Name_y',1)
     promoted_df = promoted_df.rename(columns={'Version_Num_x':'Prev_Version_Num','Panel_Name_x':'Panel_Name','Version_Num_y':'Curr_Version_Num','Gene_Status_x':'Prev_Gene_Status','Gene_Status_y':'Curr_Gene_Status'})
     promoted_df.to_excel(writer, 'Promoted Genes',index=False)
@@ -151,10 +183,18 @@ def promoted_genes():
 
 def demoted_genes():
     # any genes in panels v1.0 and higher, where gene was previously rated 'Green' but is no longer rated as 'Green'
-    df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND gene_status = 'Green' AND version_num >=1", conn)
-    df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND gene_status != 'Green'", conn)
+    #df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND gene_status = 'Green' AND version_num >=1", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status = 'Green' AND version_num >=1",(prev_version+'%', ))
+    data = cur.fetchall()
+    df1 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Gene_Name','Status','Version_Num'])
+
+    #df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND gene_status != 'Green'", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status != 'Green'",(curr_version+'%', ))
+    data = cur.fetchall()
+    df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Gene_Name','Status','Version_Num'])
+
     # print("Demoted genes: ")
-    demoted_df = pd.merge(df1, df2, on=['Panel_ID','Gene_Symbol'], how='inner')
+    demoted_df = pd.merge(df1, df2, on=['Panel_ID','Gene_Name'], how='inner')
     demoted_df = demoted_df.drop('Panel_Name_y',1)
     demoted_df = demoted_df.rename(columns={'Version_Num_x':'Prev_Version_Num','Panel_Name_x':'Panel_Name','Version_Num_y':'Curr_Version_Num','Gene_Status_x':'Prev_Gene_Status','Gene_Status_y':'Curr_Gene_Status'})
     demoted_df.to_excel(writer, 'Demoted genes', index=False)
@@ -162,10 +202,18 @@ def demoted_genes():
 
 def moi_change():
     # any green genes in panels v1.0 and higher, in which the mode of inheritance of the gene has changed
-    df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, moi, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND version_num >=1", conn)
-    df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, moi, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND gene_status = 'Green'", conn)
+    #df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, moi, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND version_num >=1", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, moi, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num >=1",(prev_version+'%', ))
+    data = cur.fetchall()
+    df1 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Gene_Name','MOI','Version_Num'])
+
+    #df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, moi, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND gene_status = 'Green'", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, moi, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status = 'Green'",(curr_version+'%', ))
+    data = cur.fetchall()
+    df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Gene_Name','MOI','Version_Num'])
+
     # print("MOI changed genes: ")
-    moi_change_df = pd.merge(df1, df2, on=['Panel_ID','Gene_Symbol'], how='inner')
+    moi_change_df = pd.merge(df1, df2, on=['Panel_ID','Gene_Name'], how='inner')
     moi_change_df['MOI_x'].fillna(value='NaN', inplace=True)
     moi_change_df['MOI_y'].fillna(value='NaN', inplace=True)
     moi_change_df = moi_change_df[moi_change_df.MOI_x != moi_change_df.MOI_y]
@@ -215,6 +263,7 @@ moi_change()
 # delete_data()
 
 writer.save()
+print("\nComparison data is now available in \\outputs")
 
 # Add a step to copy existing database into a back-up folder?
 

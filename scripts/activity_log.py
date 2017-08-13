@@ -7,34 +7,40 @@ from bs4 import BeautifulSoup
 conn = sqlite3.connect("outputs/PanelApp_Data_test.db")
 cur = conn.cursor()
 
-try: 
-    cur.execute( 
-        "CREATE TABLE IF NOT EXISTS panelapp_activity (Date TEXT,Panel_Name TEXT, Gene_Name TEXT, Activity TEXT)") 
-except: 
+try:
+    cur.execute(
+        "CREATE TABLE IF NOT EXISTS panelapp_activity (Date TEXT, Panel TEXT, Gene TEXT, Activity TEXT)") 
+except:
     print("Cannot create table. It may already exist. Program will now end.") 
-    sys.exit() 
+    sys.exit()
 
 # Capture data from activity page of PanelApp
 url = 'https://panelapp.extge.co.uk/crowdsourcing/PanelApp/Activity'
+
 r = requests.get(url)
-soup = BeautifulSoup(r.content,'lxml')
+data = r.text
+soup = BeautifulSoup(data, 'lxml')
 
 table = soup.find_all('table')[0]
-df = pd.read_html(str(table))
 
-activity_df = pd.concat(df)
+rows = table.find_all('tr')[2:]
 
-activity_df.columns.values[0] = 'Date'
-activity_df.columns.values[1] = 'Panel'
-activity_df.columns.values[2] = 'Gene'
-activity_df.columns.values[3] = 'Activity'
-print(activity_df)
+data = {'Date':[],'Panel':[],'Gene':[],'Activity':[]}
 
-for df in activity_df:
-    cur.execute("INSERT INTO panelapp_activity VALUES (?,?,?,?)", ("Date","Panel","Gene","Activity"))
+for row in rows:
+    cols = row.find_all('td')
+    data['Date'].append(cols[0].get_text().strip('\n'))
+    data['Panel'].append(cols[1].get_text().strip('\n'))
+    data['Gene'].append(cols[2].get_text().strip('\n'))
+    data['Activity'].append(cols[3].get_text().strip('\n'))
 
+df = pd.DataFrame(data)
+print(df)
 
 # Save data to database
+
+df.to_sql('panelapp_activity',conn,index=False,if_exists='append')
+
 # Remove any duplicate entries
 # Input date range of interest
 # Return number of reviewers within date range
@@ -42,6 +48,5 @@ for df in activity_df:
 # Plot graph of number of reviews per reviewer within date range
 
 # Close cursor and database connection to store data to database
-
 cur.close()
 conn.close()
