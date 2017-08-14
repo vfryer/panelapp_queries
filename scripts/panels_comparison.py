@@ -14,7 +14,7 @@ import sqlite3, time, pandas as pd
 conn = sqlite3.connect("outputs/PanelApp_Data_test.db")
 cur = conn.cursor()
 
-# retrieve all timestamps for data withoin the database and rpint to command line to allow user to select which data to compare
+# retrieve all timestamps for data within the database and print to command line to allow user to select which data to compare
 cur.execute("SELECT DISTINCT Datestamp FROM panelapp_info")
 data = cur.fetchall()
 print("Data is available for the following dates:\n")
@@ -43,7 +43,7 @@ out_path = sys.argv[1]
 
 filename = os.path.join(out_path, 'panels_genes_comp_' + todays_date + '.csv')
 
-writer = pd.ExcelWriter('panels_genes_comp_' + prev_version + '_to_' + curr_version + '.xlsx')
+writer = pd.ExcelWriter(out_path+'panels_genes_comp_' + prev_version + '_to_' + curr_version + '.xlsx')
 
 def new_v1_panels():
     # any current v1+ panels that exist in latest panel version capture that did not exist in the previous panel capture
