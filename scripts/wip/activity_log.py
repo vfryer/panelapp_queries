@@ -7,12 +7,12 @@ from bs4 import BeautifulSoup
 conn = sqlite3.connect("outputs/PanelApp_Data_test.db")
 cur = conn.cursor()
 
-try:
-    cur.execute(
-        "CREATE TABLE IF NOT EXISTS panelapp_activity (Date TEXT, Panel TEXT, Gene TEXT, Activity TEXT)") 
-except:
-    print("Cannot create table. It may already exist. Program will now end.") 
-    sys.exit()
+#try:
+#    cur.execute(
+#        "CREATE TABLE IF NOT EXISTS panelapp_activity (Date TEXT, Panel TEXT, Gene TEXT, Activity TEXT)") 
+#except:
+#    print("Cannot create table. It may already exist. Program will now end.") 
+#    sys.exit()
 
 # Capture data from activity page of PanelApp
 url = 'https://panelapp.extge.co.uk/crowdsourcing/PanelApp/Activity'
@@ -21,27 +21,38 @@ r = requests.get(url)
 data = r.text
 soup = BeautifulSoup(data, 'lxml')
 
+# finr the first table in the webpage
 table = soup.find_all('table')[0]
 
+# find the first rows (skip the first two rows which are table filters and contain no data)
 rows = table.find_all('tr')[2:]
 
 data = {'Date':[],'Panel':[],'Gene':[],'Activity':[]}
 
+# Create a dataframe of the activity captured from the activity page
 for row in rows:
     cols = row.find_all('td')
     data['Date'].append(cols[0].get_text().strip('\n'))
     data['Panel'].append(cols[1].get_text().strip('\n'))
     data['Gene'].append(cols[2].get_text().strip('\n'))
-    data['Activity'].append(cols[3].get_text().strip('\n'))
+    data['Activity'].append(cols[3].get_text().strip('\n').strip())
 
 df = pd.DataFrame(data)
-print(df)
 
-# Save data to database
+# Create a dataframe of the existing activity from the database
+df2 = pd.read_sql("SELECT * FROM panelapp_activity", conn)
+#remove any duplicates from existing dataframe
+df2 = df2.drop_duplicates()
+#strip trailing and leading whitespace from 'Activity' data
+df2['Activity'] = df2['Activity'].str.strip()
 
-df.to_sql('panelapp_activity',conn,index=False,if_exists='append')
+# Add new dataframe to existing datframe
+# Keep only values in new dataframe that are not duplicates
+new_entries_df = df.append(df2, ignore_index=True).drop_duplicates(keep=False)
+	
+# Save only new data to database
+new_entries_df.to_sql('panelapp_activity',conn,index=False,if_exists='append')
 
-# Remove any duplicate entries
 # Input date range of interest
 # Return number of reviewers within date range
 # Return number of reviews per reviewer within date range

@@ -1,8 +1,8 @@
 """
 Title: panels_comparison.py
-Version:
-Release Date:  
-Author: VFryer
+Version: 1.0
+Release Date:  15/08/17
+Author: VFryer (verity.fryer@nhs.net)
 The following code compares data from two datasets (different timestamps) to generate Excel spreadsheet scontainngthe details of comparisons.
 Usage: python panels_comparison.py <output file location>
 """
@@ -11,7 +11,7 @@ import requests, csv, datetime, sys, os
 import sqlite3, time, pandas as pd
 
 # create a connection to the specified SQLite database
-conn = sqlite3.connect("outputs/PanelApp_Data_test.db")
+conn = sqlite3.connect("outputs/PanelApp_Data.db")
 cur = conn.cursor()
 
 # retrieve all timestamps for data within the database and print to command line to allow user to select which data to compare
@@ -22,14 +22,14 @@ for row in data:
     print(row)
 print('\n')
 
-prev_version = input("Enter date of current PanelApp data capture in format yyyy-mm-dd:\n")
+prev_version = input("Enter date of previous PanelApp data capture in format yyyy-mm-dd:\n")
 #prev_version = "2017-05-23"
-curr_version = input("\nEnter data or previous PanelApp data capture in format yyyy-mm-dd:\n")
+curr_version = input("\nEnter data of current PanelApp data capture in format yyyy-mm-dd:\n")
 #curr_version = "2017-07-10"
 
 
 # save today's date to use in the filename to record a snapshot of panel versions on a weekly basis
-todays_date = datetime.datetime.now().strftime("%Y%m%d")
+todays_date = datetime.datetime.now().strftime("%Y-%m-%d")
 datestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 #try:
@@ -49,14 +49,16 @@ def new_v1_panels():
     # any current v1+ panels that exist in latest panel version capture that did not exist in the previous panel capture
     cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num >=1 AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE ?)",(curr_version+'%',prev_version+'%'))
     data = cur.fetchall()
-    # print("New v1 panels: ")
+    print("New v1 panels: ")
     new_v1_panels_df = pd.DataFrame(data, columns=['Panel Name','Panel_ID','Version_Num'])
     new_v1_panels_df.to_excel(writer, 'New v1 panels', index=False)
+    print(new_v1_panels_df)
 
 def new_v0_panels():
     # any current v0 panels that exist in latest panel version capture that did not exist in the previous panel capture
     cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num <1 AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE ?)",(curr_version+'%',prev_version+'%'))
     data = cur.fetchall()
+    #print("New v0 panels: ")
     new_v0_panels_df = pd.DataFrame(data, columns=['Panel Name','Panel_ID','Version_Num'])
     new_v0_panels_df.to_excel(writer, 'New v0 panels', index=False)
 
@@ -64,7 +66,7 @@ def del_panels():
     # any panels that do not exist in latest panel version capture vs. previous panel capture
     cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE ?)",(prev_version+'%',curr_version+'%'))
     data = cur.fetchall()
-    # print("Retired panels: ")
+    #print("Retired panels: ")
     del_panels_df = pd.DataFrame(data, columns=['Panel_Name', 'Panel_ID', 'Version_Num'])
     del_panels_df.to_excel(writer, 'Retired panels',index=False)
     # print(del_panels_df)
