@@ -4,6 +4,8 @@ Version: 1.0
 Release Date:  15/08/17
 Author: VFryer (verity.fryer@nhs.net)
 The following code compares data from two datasets (different timestamps) to generate Excel spreadsheet scontainngthe details of comparisons.
+N.B. Activate the virtual environment with: source panelapp_queries/bin/activate
+Python3 must be running for this script.
 Usage: python panels_comparison.py <output file location>
 """
 
@@ -20,7 +22,6 @@ data = cur.fetchall()
 print("Data is available for the following dates:\n")
 for row in data:
     print(row)
-print('\n')
 
 prev_version = input("Enter date of previous PanelApp data capture in format yyyy-mm-dd:\n")
 #prev_version = "2017-05-23"
@@ -47,7 +48,7 @@ writer = pd.ExcelWriter(out_path+'panels_genes_comp_' + prev_version + '_to_' + 
 
 def new_v1_panels():
     # any current v1+ panels that exist in latest panel version capture that did not exist in the previous panel capture
-    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num >=1 AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE ?)",(curr_version+'%',prev_version+'%'))
+    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num >=1 AND panel_id NOT IN(SELECT panel_id FROM panelapp_info WHERE Datestamp LIKE ?)",(curr_version+'%',prev_version+'%'))
     data = cur.fetchall()
     print("New v1 panels: ")
     new_v1_panels_df = pd.DataFrame(data, columns=['Panel Name','Panel_ID','Version_Num'])
@@ -56,7 +57,7 @@ def new_v1_panels():
 
 def new_v0_panels():
     # any current v0 panels that exist in latest panel version capture that did not exist in the previous panel capture
-    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num <1 AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE ?)",(curr_version+'%',prev_version+'%'))
+    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num <1 AND panel_id NOT IN(SELECT panel_id FROM panelapp_info WHERE Datestamp LIKE ?)",(curr_version+'%',prev_version+'%'))
     data = cur.fetchall()
     #print("New v0 panels: ")
     new_v0_panels_df = pd.DataFrame(data, columns=['Panel Name','Panel_ID','Version_Num'])
@@ -64,7 +65,7 @@ def new_v0_panels():
 
 def del_panels():
     # any panels that do not exist in latest panel version capture vs. previous panel capture
-    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE ?)",(prev_version+'%',curr_version+'%'))
+    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND panel_id NOT IN(SELECT DISTINCT panel_id FROM panelapp_info WHERE Datestamp LIKE ?)",(prev_version+'%',curr_version+'%'))
     data = cur.fetchall()
     #print("Retired panels: ")
     del_panels_df = pd.DataFrame(data, columns=['Panel_Name', 'Panel_ID', 'Version_Num'])
@@ -77,10 +78,12 @@ def promoted_panels():
     cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num <1",(prev_version+'%', ))
     data = cur.fetchall()
     df1 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
+    print(df1)
     #df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND version_num >=1", conn)
-    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num >1",(curr_version+'%', ))
+    cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num >=1",(curr_version+'%', ))
     data = cur.fetchall()
     df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
+    print(df2)
     # print("Promoted panels: ")
     prom_panel_df = pd.merge(df1, df2, on='Panel_ID', how='inner')
     prom_panel_df = prom_panel_df.drop('Panel_Name_y',1)
@@ -105,7 +108,6 @@ def updated_v1_panels():
     up_v1_df = up_v1_df.rename(columns={'Version_Num_x':'Prev_Version_Num','Panel_Name_x':'Panel_Name','Version_Num_y':'Curr_Version_Num'})
     up_v1_df.to_excel(writer, 'Updated v1 Panels',index=False)
     # print(up_v1_df)
-    
 
 def updated_v0_panels():
     # any panels previously < v1 that have been updated to a new version that is still <v1
@@ -143,10 +145,8 @@ def name_changed_panels():
     name_change_df.to_excel(writer, 'Name Changed Panels',index=False)
     # print(name_change_df)
 
-
 #def review_required():
     # any panels that require review (lower than v1 but 'approved' and live in PanelApp
-
 
 def new_genes():
     # any genes that have been added to any v1+ panels with status of 'green' that were not in previous panels
@@ -232,7 +232,7 @@ def update_data():
 
     cur.execute("UPDATE panelapp_info SET Datestamp = '2017-05-23 01:00:00' WHERE Datestamp = '20170523 01:00:00'")
     conn.commit()
-    
+
     cur.execute("SELECT * from panelapp_info WHERE Datestamp LIKE '201705%'")
     data = cur.fetchall()
 
@@ -243,9 +243,8 @@ def delete_data():
     for row in data:
         print(row)
 
-    cur.execute("DELETE FROM panelapp_info WHERE Datestamp LIKE '2017-07-10 16%'")
+    cur.execute("DELETE FROM panelapp_info WHERE Datestamp LIKE '20170523%'")
     conn.commit()
-
 '''
 
 new_v1_panels()
@@ -255,14 +254,14 @@ promoted_panels()
 updated_v0_panels()
 updated_v1_panels()
 name_changed_panels()
-#review_required()
+##review_required()
 new_genes()
 del_genes()
 promoted_genes()
 demoted_genes()
 moi_change()
-# update_data()
-# delete_data()
+##update_data()
+##delete_data()
 
 writer.save()
 print("\nComparison data is now available in \\outputs")

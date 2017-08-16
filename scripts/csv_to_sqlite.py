@@ -1,7 +1,7 @@
 """
 Title: csv_to_sqlite.py
 Version:
-Release Date:  
+Release Date:
 Author: VFryer
 The following code allows a .csv file all panels to be used to retrieve previous versions of panels and load the associated data into the PanelApp DB.
 Usage: python csv_to_sqlite.py <csv file to upload>
@@ -13,19 +13,22 @@ import sqlite3, time
 conn = sqlite3.connect("outputs/PanelApp_Data.db")
 cur = conn.cursor()
 
-'''
-try:
-    cur.execute(
-        "CREATE TABLE IF NOT EXISTS panelapp_info (Datestamp TEXT,Panel_Name TEXT,Panel_ID TEXT,Version_Num TEXT,Gene_Symbol TEXT,Gene_Status TEXT,MOI TEXT)")
-except:
-    print("Cannot create table. It may already exist. Program will now end.")
-    sys.exit()
+#try:
+#    cur.execute(
+#        "CREATE TABLE IF NOT EXISTS panelapp_info (Datestamp TEXT,Panel_Name TEXT,Panel_ID TEXT,Version_Num TEXT,Gene_Symbol TEXT,Gene_Status TEXT,MOI TEXT)")
+#except:
+#    print("Cannot create table. It may already exist. Program will now end.")
+#    sys.exit()
 
 input_file = sys.argv[1]
 datestamp = os.path.splitext(os.path.basename(input_file))[0]
 datestamp = datestamp.split('_')[3]
+year = datestamp[:4]
+month = datestamp[4:6]
+day = datestamp[6:]
+datestamp = year+'-'+month+'-'+day
 datestamp = datestamp + " 01:00:00"
-print(datestamp)
+
 
 with open(input_file, 'r') as csvfile:
     read_csv = csv.reader(csvfile)
@@ -46,6 +49,15 @@ with open(input_file, 'r') as csvfile:
             # retrieve gene name and status for each version
             gene_info = panel_data['result']['Genes']
 
+            if gene_info == []:
+            # write data retrieved into a .csv to be archived and saved for future reference
+                row = [panel_name, panel_id, version_num, gene_symbol, 'N/A', 'N/A', 'N/A']
+                writer.writerow(row)
+
+                # write data to database for subsequent analysis
+                cur.execute("INSERT INTO panelapp_info VALUES (?,?,?,?,?,?,?)",(datestamp,panel_name,panel_id,version_num, 'N/A', 'N/A', 'N/A'))
+                conn.commit()
+
             # get all genes and their status
             for gene in gene_info:
                 gene_symbol = gene["GeneSymbol"]
@@ -61,17 +73,20 @@ with open(input_file, 'r') as csvfile:
                 else:
                     gene_status = "Unknown"
 
-                # print(datestamp,panel_name,panel_id,version_num,gene_symbol,gene_status,moi)
+                print(datestamp,panel_name,panel_id,version_num,gene_symbol,gene_status,moi)
 
                 # write data to database for subsequent analysis
-                cur.execute("INSERT INTO panelapp_info VALUES (?,?,?,?,?,?,?)",(datestamp,panel_name,panel_id,version_num,gene_symbol,gene_status,moi))
-                conn.commit()
-
+                try:
+                    cur.execute("INSERT INTO panelapp_info VALUES (?,?,?,?,?,?,?)",(datestamp,panel_name,panel_id,version_num,gene_symbol,gene_status,moi))
+                    conn.commit()
+                    print("Saved to database")
+                except:
+                    print("Could not save to database")
         except:
             # if the try loop fails for any reason, inform user
             print("Panel not found")
-'''
 
+'''
 def delete_data():
     cur.execute("SELECT DISTINCT Datestamp from panelapp_info")
     data = cur.fetchall()
@@ -85,8 +100,9 @@ def delete_data():
     data = cur.fetchall()
     for row in data:
         print(row)
+'''
 
+# delete_data()
 
-delete_data()
 cur.close()
 conn.close()
