@@ -23,7 +23,7 @@ print("Data is available for the following dates:\n")
 for row in data:
     print(row)
 
-prev_version = input("Enter date of previous PanelApp data capture in format yyyy-mm-dd:\n")
+prev_version = input("\nEnter date of previous PanelApp data capture in format yyyy-mm-dd:\n")
 #prev_version = "2017-05-23"
 curr_version = input("\nEnter data of current PanelApp data capture in format yyyy-mm-dd:\n")
 #curr_version = "2017-07-10"
@@ -50,10 +50,10 @@ def new_v1_panels():
     # any current v1+ panels that exist in latest panel version capture that did not exist in the previous panel capture
     cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num >=1 AND panel_id NOT IN(SELECT panel_id FROM panelapp_info WHERE Datestamp LIKE ?)",(curr_version+'%',prev_version+'%'))
     data = cur.fetchall()
-    print("New v1 panels: ")
+    #print("New v1 panels: ")
     new_v1_panels_df = pd.DataFrame(data, columns=['Panel Name','Panel_ID','Version_Num'])
     new_v1_panels_df.to_excel(writer, 'New v1 panels', index=False)
-    print(new_v1_panels_df)
+    #print(new_v1_panels_df)
 
 def new_v0_panels():
     # any current v0 panels that exist in latest panel version capture that did not exist in the previous panel capture
@@ -78,12 +78,12 @@ def promoted_panels():
     cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num <1",(prev_version+'%', ))
     data = cur.fetchall()
     df1 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
-    print(df1)
+    #print(df1)
     #df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND version_num >=1", conn)
     cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num >=1",(curr_version+'%', ))
     data = cur.fetchall()
     df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
-    print(df2)
+    #print(df2)
     # print("Promoted panels: ")
     prom_panel_df = pd.merge(df1, df2, on='Panel_ID', how='inner')
     prom_panel_df = prom_panel_df.drop('Panel_Name_y',1)
