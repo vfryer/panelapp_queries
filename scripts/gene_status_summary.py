@@ -22,6 +22,7 @@ cur = conn.cursor()
 # save today's date to use in the filename to record a snapshot of panel versions on a weekly basis
 todays_date = datetime.datetime.now().strftime("%Y-%m-%d")
 datestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+datestamp_spl = datestamp.split(' ')
 
 #try:
 #    cur.execute(
@@ -57,7 +58,7 @@ for panel in panel_list:
     try:
         url = 'https://bioinfo.extge.co.uk/crowdsourcing/WebServices/get_panel/' + panel_id + '/?version=' + version_num
         r = requests.get(url)
-        
+
         panel_data = r.json()
 
         # retrieve gene name and status for each version
@@ -121,33 +122,34 @@ for panel in panel_list:
 
         cur.execute("INSERT INTO gene_status_summary VALUES (?,?,?,?,?,?)",(todays_date,panel_name,green_count,amber_count,red_count,nolist_count))
         conn.commit()
-        
+
     except:
         # if the try loop fails for any reason, inform user
         print("Panel not found")
 
 print(str(panel_count) + " panels counted")
 
-# create a dataframe of all months values form  database table
-df = pd.read_sql_query("SELECT * FROM gene_status_summary", conn)
+# create a dataframe of all months values from database table
+cur.execute("SELECT Panel_Name, Green_Count, Amber_Count,Red_Count FROM gene_status_summary WHERE Date LIKE ?",(datestamp_spl[0]+'%',))
+data = cur.fetchall()
+df = pd.DataFrame(data, columns=['Panel_Name','Green_Count','Amber_Count','Red_Count'])
 
-# amend the dataframe for graph
+# amend the dataframe for graph by setting panel name as index, sort alphabetically
 df = df.set_index('Panel_Name').sort_index(ascending=False)
-#sort into alphabetical order by panel name
-#df = df.sort_index
-df = df.drop('No_List_Count',1) # to be added once no list items can be counted
+#df = df.drop('No_List_Count',1) # to be added once no list items can be counted
 
 #colours = ['royalblue'] add 4th colour when no_list genes are counted
+# set colours for bars in barchart, these will cycle through three data points at a time
 colours = ['seagreen','gold','firebrick']
 
-#ax = df.plot(kind='barh',stacked=True, title='Gene status per panel', legend=True, colormap='brg',figsize=(12,30))
-
+# plot a stacked bar horizontal bar chart with a legend, set title, axes title and chart size
 ax = df.plot(kind='barh',stacked=True, legend=True, color=colours,figsize=(30,30))
 ax.set_title('Gene status per panel', fontsize = 30)
 ax.legend(fontsize=30)
 ax.set_xlabel("Number of genes", fontsize = 30)
 ax.tick_params(axis ='x',width=(40))
 ax.set_ylabel("Panel name", fontsize = 30)
+# add gridlines to barchart
 ax.xaxis.grid(which='major', linewidth=1)
 plt.minorticks_on()
 ax.xaxis.grid(which='minor', linewidth=0.5)
@@ -155,6 +157,20 @@ fig = ax.get_figure()
 fig.tight_layout() # ensure all panel names are printed in full on the axis
 fig.savefig(out_path + todays_date + '_gene_status_summary.png')
 
+'''
+def delete_data():
+    # ***N.B. data deleted from SQLite DB cannot be restored!***
+    #data may need to be deleted if this scrpt is run more than once on the same day as all data with the same Date will be plotted
+    cur.execute("SELECT DISTINCT Date from gene_status_summary")
+    data = cur.fetchall()
+    for row in data:
+        print(row)
+
+    cur.execute("DELETE FROM gene_status_summary WHERE Date LIKE '2017-08-21%'")
+    conn.commit()
+
+delete_data()
+'''
+
 cur.close()
 conn.close()
-

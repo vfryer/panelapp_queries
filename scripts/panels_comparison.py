@@ -50,7 +50,7 @@ def new_v1_panels():
     # any current v1+ panels that exist in latest panel version capture that did not exist in the previous panel capture
     cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num >=1 AND panel_id NOT IN(SELECT panel_id FROM panelapp_info WHERE Datestamp LIKE ?)",(curr_version+'%',prev_version+'%'))
     data = cur.fetchall()
-    #print("New v1 panels: ")
+    print("Finding new v1 panels...")
     new_v1_panels_df = pd.DataFrame(data, columns=['Panel Name','Panel_ID','Version_Num'])
     new_v1_panels_df.to_excel(writer, 'New v1 panels', index=False)
     #print(new_v1_panels_df)
@@ -59,7 +59,7 @@ def new_v0_panels():
     # any current v0 panels that exist in latest panel version capture that did not exist in the previous panel capture
     cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num <1 AND panel_id NOT IN(SELECT panel_id FROM panelapp_info WHERE Datestamp LIKE ?)",(curr_version+'%',prev_version+'%'))
     data = cur.fetchall()
-    #print("New v0 panels: ")
+    print("Finding new v0 panels... ")
     new_v0_panels_df = pd.DataFrame(data, columns=['Panel Name','Panel_ID','Version_Num'])
     new_v0_panels_df.to_excel(writer, 'New v0 panels', index=False)
 
@@ -67,7 +67,7 @@ def del_panels():
     # any panels that do not exist in latest panel version capture vs. previous panel capture
     cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND panel_id NOT IN(SELECT DISTINCT panel_id FROM panelapp_info WHERE Datestamp LIKE ?)",(prev_version+'%',curr_version+'%'))
     data = cur.fetchall()
-    #print("Retired panels: ")
+    print("Finding retired panels...")
     del_panels_df = pd.DataFrame(data, columns=['Panel_Name', 'Panel_ID', 'Version_Num'])
     del_panels_df.to_excel(writer, 'Retired panels',index=False)
     # print(del_panels_df)
@@ -84,7 +84,7 @@ def promoted_panels():
     data = cur.fetchall()
     df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
     #print(df2)
-    # print("Promoted panels: ")
+    print("Finding promoted panels...")
     prom_panel_df = pd.merge(df1, df2, on='Panel_ID', how='inner')
     prom_panel_df = prom_panel_df.drop('Panel_Name_y',1)
     prom_panel_df = prom_panel_df.rename(columns={'Version_Num_x':'Prev_Version_Num','Panel_Name_x':'Panel_Name','Version_Num_y':'Curr_Version_Num'})
@@ -101,7 +101,7 @@ def updated_v1_panels():
     cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num >=1",(curr_version+'%', ))
     data = cur.fetchall()
     df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
-    # print("Updated v1 panels: ")
+    print("Finding updated v1 panels...")
     up_v1_df = pd.merge(df1, df2, on='Panel_ID', how='inner')
     up_v1_df = up_v1_df.drop('Panel_Name_y',1)
     up_v1_df = up_v1_df[up_v1_df.Version_Num_x != up_v1_df.Version_Num_y]
@@ -119,7 +119,7 @@ def updated_v0_panels():
     cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND version_num <1",(curr_version+'%', ))
     data = cur.fetchall()
     df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
-    # print("Updated v0 panels: ")
+    print("Finding updated v0 panels...")
     up_v0_df = pd.merge(df1, df2, on='Panel_ID', how='inner')
     up_v0_df = up_v0_df.drop('Panel_Name_y',1)
     up_v0_df = up_v0_df[up_v0_df.Version_Num_x != up_v0_df.Version_Num_y]
@@ -138,7 +138,7 @@ def name_changed_panels():
     cur.execute("SELECT DISTINCT panel_name, panel_id, version_num FROM panelapp_info WHERE Datestamp LIKE ?",(curr_version+'%', ))
     data = cur.fetchall()
     df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Version_Num'])
-    # print("Name changed panels: ")
+    print("Finding name changed panels...")
     name_change_df = pd.merge(df1, df2, on='Panel_ID', how='inner')
     name_change_df = name_change_df[name_change_df.Panel_Name_x != name_change_df.Panel_Name_y]
     name_change_df = name_change_df.rename(columns={'Panel_Name_x':'Prev_Panel_Name','Panel_Name_y':'Curr_Panel_Name','Version_Num_x':'Prev_Version_Num','Version_Num_y':'Curr_Version_Num'})
@@ -152,7 +152,7 @@ def new_genes():
     # any genes that have been added to any v1+ panels with status of 'green' that were not in previous panels
     cur.execute("SELECT DISTINCT panel_name, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status = 'Green' AND version_num >=1 AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE ?)",(curr_version+'%',prev_version+'%'))
     data = cur.fetchall()
-    # print("New genes: ")
+    print("Finding new genes...")
     new_genes_df = pd.DataFrame(data, columns = ['Panel_Name','Gene_Symbol', 'Gene_Status','Version_Num'])
     new_genes_df.to_excel(writer, 'New genes', index=False)
     # print(new_genes_df)
@@ -161,7 +161,7 @@ def del_genes():
     # any 'green' genes that have been removed from any v1+ panels
     cur.execute("SELECT DISTINCT panel_name, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status = 'Green' AND version_num >=1 AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE ?)",(prev_version+'%',curr_version+'%'))
     data = cur.fetchall()
-    # print("Retired genes: ")
+    print("Finding retired genes...")
     del_genes_df = pd.DataFrame(data, columns = ['Panel_Name','Gene_Symbol', 'Gene_Status','Version_Num'])
     del_genes_df.to_excel(writer, 'Retired genes', index=False)
     # print(del_genes_df)
@@ -176,7 +176,7 @@ def promoted_genes():
     cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status = 'Green'",(curr_version+'%', ))
     data = cur.fetchall()
     df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Gene_Name','Status','Version_Num'])
-    # print("Promoted genes: ")
+    print("Finding promoted genes...")
     promoted_df = pd.merge(df1, df2, on=['Panel_ID','Gene_Name'], how='inner')
     promoted_df = promoted_df.drop('Panel_Name_y',1)
     promoted_df = promoted_df.rename(columns={'Version_Num_x':'Prev_Version_Num','Panel_Name_x':'Panel_Name','Version_Num_y':'Curr_Version_Num','Gene_Status_x':'Prev_Gene_Status','Gene_Status_y':'Curr_Gene_Status'})
@@ -195,7 +195,7 @@ def demoted_genes():
     data = cur.fetchall()
     df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Gene_Name','Status','Version_Num'])
 
-    # print("Demoted genes: ")
+    print("Finding demoted genes...")
     demoted_df = pd.merge(df1, df2, on=['Panel_ID','Gene_Name'], how='inner')
     demoted_df = demoted_df.drop('Panel_Name_y',1)
     demoted_df = demoted_df.rename(columns={'Version_Num_x':'Prev_Version_Num','Panel_Name_x':'Panel_Name','Version_Num_y':'Curr_Version_Num','Gene_Status_x':'Prev_Gene_Status','Gene_Status_y':'Curr_Gene_Status'})
@@ -214,7 +214,7 @@ def moi_change():
     data = cur.fetchall()
     df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Gene_Name','MOI','Version_Num'])
 
-    # print("MOI changed genes: ")
+    print("Finding MOI changed genes...")
     moi_change_df = pd.merge(df1, df2, on=['Panel_ID','Gene_Name'], how='inner')
     moi_change_df['MOI_x'].fillna(value='NaN', inplace=True)
     moi_change_df['MOI_y'].fillna(value='NaN', inplace=True)
@@ -243,7 +243,7 @@ def delete_data():
     for row in data:
         print(row)
 
-    cur.execute("DELETE FROM panelapp_info WHERE Datestamp LIKE '20170523%'")
+    cur.execute("DELETE FROM panelapp_info WHERE Datestamp LIKE '2017-08-21 21%'")
     conn.commit()
 '''
 
