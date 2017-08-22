@@ -148,42 +148,77 @@ def name_changed_panels():
 #def review_required():
     # any panels that require review (lower than v1 but 'approved' and live in PanelApp
 
-def new_genes():
+def new_v1_grn_genes():
     # any genes that have been added to any v1+ panels with status of 'green' that were not in previous panels
-    cur.execute("SELECT DISTINCT panel_name, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status = 'Green' AND version_num >=1 AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE ?)",(curr_version+'%',prev_version+'%'))
+    cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status = 'Green' AND version_num >=1 AND panel_id NOT IN(SELECT panel_id FROM panelapp_info WHERE Datestamp LIKE ?)",(curr_version+'%',prev_version+'%'))
     data = cur.fetchall()
-    print("Finding new genes...")
-    new_genes_df = pd.DataFrame(data, columns = ['Panel_Name','Gene_Symbol', 'Gene_Status','Version_Num'])
-    new_genes_df.to_excel(writer, 'New genes', index=False)
+    print("Finding new v1 green genes...")
+    new_genes_df = pd.DataFrame(data, columns = ['Panel_Name','Panel_ID','Gene_Symbol', 'Gene_Status','Version_Num'])
+    new_genes_df.to_excel(writer, 'New v1 grn genes', index=False)
     # print(new_genes_df)
 
-def del_genes():
+def new_v1_oth_genes():
+    # any genes that have been added to any v1+ panels with status of 'green' that were not in previous panels
+    cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status != 'Green' AND version_num >=1 AND panel_id NOT IN(SELECT panel_id FROM panelapp_info WHERE Datestamp LIKE ?)",(curr_version+'%',prev_version+'%'))
+    data = cur.fetchall()
+    print("Finding new v1 other genes...")
+    new_genes_df = pd.DataFrame(data, columns = ['Panel_Name','Panel_ID','Gene_Symbol', 'Gene_Status','Version_Num'])
+    new_genes_df.to_excel(writer, 'New v1 oth genes', index=False)
+    # print(new_genes_df)
+
+def del_grn_genes():
     # any 'green' genes that have been removed from any v1+ panels
     cur.execute("SELECT DISTINCT panel_name, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status = 'Green' AND version_num >=1 AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE ?)",(prev_version+'%',curr_version+'%'))
     data = cur.fetchall()
-    print("Finding retired genes...")
+    print("Finding retired green genes...")
     del_genes_df = pd.DataFrame(data, columns = ['Panel_Name','Gene_Symbol', 'Gene_Status','Version_Num'])
-    del_genes_df.to_excel(writer, 'Retired genes', index=False)
+    del_genes_df.to_excel(writer, 'Retired grn genes', index=False)
     # print(del_genes_df)
 
-def promoted_genes():
+def del_oth_genes():
+    # any 'non-green' genes that have been removed from any v1+ panels
+    cur.execute("SELECT DISTINCT panel_name, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status != 'Green' AND version_num >=1 AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE ?)",(prev_version+'%',curr_version+'%'))
+    data = cur.fetchall()
+    print("Finding retired green genes...")
+    del_genes_df = pd.DataFrame(data, columns = ['Panel_Name','Gene_Symbol', 'Gene_Status','Version_Num'])
+    del_genes_df.to_excel(writer, 'Retired grn genes', index=False)
+    # print(del_genes_df)
+
+def promoted_v1_genes():
     # any genes within v1.0+ panels that are currently 'green' that were previously not 'green'
     #df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND gene_status != 'Green'", conn)
     cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status != 'Green'",(prev_version+'%', ))
     data = cur.fetchall()
     df1 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Gene_Name','Status','Version_Num'])
     #df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND gene_status = 'Green' AND version_num >=1", conn)
-    cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status = 'Green'",(curr_version+'%', ))
+    cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status = 'Green' AND version_num >=1",(curr_version+'%', ))
     data = cur.fetchall()
     df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Gene_Name','Status','Version_Num'])
-    print("Finding promoted genes...")
+    print("Finding promoted v1 genes...")
     promoted_df = pd.merge(df1, df2, on=['Panel_ID','Gene_Name'], how='inner')
     promoted_df = promoted_df.drop('Panel_Name_y',1)
-    promoted_df = promoted_df.rename(columns={'Version_Num_x':'Prev_Version_Num','Panel_Name_x':'Panel_Name','Version_Num_y':'Curr_Version_Num','Gene_Status_x':'Prev_Gene_Status','Gene_Status_y':'Curr_Gene_Status'})
-    promoted_df.to_excel(writer, 'Promoted Genes',index=False)
+    promoted_df = promoted_df.rename(columns={'Version_Num_x':'Prev_Version_Num','Panel_Name_x':'Panel_Name','Version_Num_y':'Curr_Version_Num','Status_x':'Prev_Gene_Status','Status_y':'Curr_Gene_Status'})
+    promoted_df.to_excel(writer, 'Promoted v1 Genes',index=False)
     # print(promoted_df)
 
-def demoted_genes():
+def promoted_v0_genes():
+    # any genes within v0+ panels that are currently 'green' that were previously not 'green'
+    #df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND gene_status != 'Green'", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status != 'Green'",(prev_version+'%', ))
+    data = cur.fetchall()
+    df1 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Gene_Name','Status','Version_Num'])
+    #df2 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-07-10%' AND gene_status = 'Green' AND version_num >=1", conn)
+    cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status = 'Green' AND version_num <1",(curr_version+'%', ))
+    data = cur.fetchall()
+    df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Gene_Name','Status','Version_Num'])
+    print("Finding promoted v0 genes...")
+    promoted_df = pd.merge(df1, df2, on=['Panel_ID','Gene_Name'], how='inner')
+    promoted_df = promoted_df.drop('Panel_Name_y',1)
+    promoted_df = promoted_df.rename(columns={'Version_Num_x':'Prev_Version_Num','Panel_Name_x':'Panel_Name','Version_Num_y':'Curr_Version_Num','Status_x':'Prev_Gene_Status','Status_y':'Curr_Gene_Status'})
+    promoted_df.to_excel(writer, 'Promoted v0 Genes',index=False)
+    # print(promoted_df)
+
+def demoted_v1_genes():
     # any genes in panels v1.0 and higher, where gene was previously rated 'Green' but is no longer rated as 'Green'
     #df1 = pd.read_sql_query("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE '2017-05-23%' AND gene_status = 'Green' AND version_num >=1", conn)
     cur.execute("SELECT DISTINCT panel_name, panel_id, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status = 'Green' AND version_num >=1",(prev_version+'%', ))
@@ -195,11 +230,11 @@ def demoted_genes():
     data = cur.fetchall()
     df2 = pd.DataFrame(data, columns=['Panel_Name','Panel_ID','Gene_Name','Status','Version_Num'])
 
-    print("Finding demoted genes...")
+    print("Finding demoted v1 genes...")
     demoted_df = pd.merge(df1, df2, on=['Panel_ID','Gene_Name'], how='inner')
     demoted_df = demoted_df.drop('Panel_Name_y',1)
-    demoted_df = demoted_df.rename(columns={'Version_Num_x':'Prev_Version_Num','Panel_Name_x':'Panel_Name','Version_Num_y':'Curr_Version_Num','Gene_Status_x':'Prev_Gene_Status','Gene_Status_y':'Curr_Gene_Status'})
-    demoted_df.to_excel(writer, 'Demoted genes', index=False)
+    demoted_df = demoted_df.rename(columns={'Version_Num_x':'Prev_Version_Num','Panel_Name_x':'Panel_Name','Version_Num_y':'Curr_Version_Num','Status_x':'Prev_Gene_Status','Status_y':'Curr_Gene_Status'})
+    demoted_df.to_excel(writer, 'Demoted v1 genes', index=False)
     # print(demoted_df)
 
 def moi_change():
@@ -255,10 +290,13 @@ updated_v0_panels()
 updated_v1_panels()
 name_changed_panels()
 ##review_required()
-new_genes()
-del_genes()
-promoted_genes()
-demoted_genes()
+new_v1_grn_genes()
+new_v1_oth_genes()
+del_grn_genes()
+del_oth_genes()
+promoted_v1_genes()
+promoted_v0_genes()
+demoted_v1_genes()
 moi_change()
 ##update_data()
 ##delete_data()
