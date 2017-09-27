@@ -4,8 +4,8 @@ Coding project to query data in PanelApp.
 Documentation
 
 *****Scripts and usage******
-Script title:
- - panels_genes_to_csv.py
+
+Script title: panels_genes_to_csv.py
 Description:
  - Standalone script that can be run at any time to retrieve a list of all current panels and associated genes with gene status.
 Usage:
@@ -22,7 +22,7 @@ Current aims (24/05/17):
   - output as MS Excel file
   - this will then be used to create a pie chart for all green/amber/red/unknown status genes currently
   - documentation for script
- 
+
 2. Python script that will compare the current PanelApp versions with a previous version (specified output from panelapp_panels_curr_version.py) and output an Excel file for each panel of:
   - total red/amber/green/unknown genes
   - ?status unchanged

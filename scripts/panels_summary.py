@@ -20,10 +20,15 @@ out_path = sys.argv[1]
 
 # save today's date to use in the filename to record a snapshot of panel versions on a weekly basis
 todays_date = datetime.datetime.now().strftime("%Y-%m-%d")
+print(todays_date)
 
 # retrieve a list of all panel names
-r = requests.get('https://bioinfo.extge.co.uk/crowdsourcing/WebServices/list_panels')
-panel_data = r.json()
+try:
+    r = requests.get('https://panelapp.extge.co.uk/crowdsourcing/WebServices/list_panels')
+    panel_data = r.json()
+except:
+    print("No connection establshed with PanelApp")
+    sys.exit(1)
 
 panel_list = panel_data["result"]
 

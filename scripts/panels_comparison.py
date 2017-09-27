@@ -3,7 +3,7 @@ Title: panels_comparison.py
 Version: 1.0
 Release Date:  15/08/17
 Author: VFryer (verity.fryer@nhs.net)
-The following code compares data from two datasets (different timestamps) to generate Excel spreadsheet scontainngthe details of comparisons.
+The following code compares data from two datasets (different timestamps) to generate Excel spreadsheets containinyg the details of comparisons.
 N.B. Activate the virtual environment with: source panelapp_queries/bin/activate
 Python3 must be running for this script.
 Usage: python panels_comparison.py <output file location>
@@ -32,6 +32,7 @@ curr_version = input("\nEnter data of current PanelApp data capture in format yy
 # save today's date to use in the filename to record a snapshot of panel versions on a weekly basis
 todays_date = datetime.datetime.now().strftime("%Y-%m-%d")
 datestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+print(datestamp)
 
 #try:
 #    cur.execute(
