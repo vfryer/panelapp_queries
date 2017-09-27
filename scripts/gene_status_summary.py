@@ -1,12 +1,13 @@
 """
-Title: panels_genes_curr.py
+Title: gene_status_summary.py
 Version: 1.0
-Release Date: 19/07/2017  
+Release Date: 19/07/2017
 Author: VFryer
 The following code retrieves all panel names from PanelApp, with current panel versions, gene symbols, gene status and mode of inheritance (MOI).
 All captured data is exported into an SQLite database and a .csv (back-up for SQLite).
-User specifies the location of the back-up .csv file(outputs/archive recommended) in the command line
-Usage: python scripts/gene_status_summary.py <output file location>
+User specifies the location of the back-up .csv file(outputs/archive recommended) in the command line.
+The virtual environment must be activated before running this script (source bin/activate).
+Usage: python3 scripts/gene_status_summary.py <output file location>
 """
 
 import requests, json, csv, datetime, sys, os
@@ -112,7 +113,7 @@ for panel in panel_list:
             cur.execute("INSERT INTO panelapp_info VALUES (?,?,?,?,?,?,?)",(datestamp,panel_name,panel_id,version_num,gene_symbol,gene_status,moi))
             conn.commit()
 
-        #print("Red: " + str(red_count) + " Green: " + str(green_count) + " Amber: " + str(amber_count) + " No List: " + str(unknown_count))   
+        #print("Red: " + str(red_count) + " Green: " + str(green_count) + " Amber: " + str(amber_count) + " No List: " + str(unknown_count))
         # Open table in database to store gene_status totals
         try:
             cur.execute("CREATE TABLE IF NOT EXISTS gene_status_summary (Date TEXT,Panel_Name TEXT,Green_Count INTEGER,Amber_Count INTEGER,Red_Count INTEGER,No_List_Count INTEGER)")
@@ -155,7 +156,7 @@ plt.minorticks_on()
 ax.xaxis.grid(which='minor', linewidth=0.5)
 fig = ax.get_figure()
 fig.tight_layout() # ensure all panel names are printed in full on the axis
-fig.savefig(out_path + todays_date + '_gene_status_summary.png')
+fig.savefig(out_path + 'gene_status_summary_' + todays_date + '.png')
 
 '''
 def delete_data():

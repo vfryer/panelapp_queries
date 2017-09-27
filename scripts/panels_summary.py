@@ -1,10 +1,11 @@
 """
-Title: panels_curr_version.py
+Title: panels_summary.py
 Version: 2.0
-Release Date: 14 August 2017 
+Release Date: 14 August 2017
 Author: VFryer
 The following code retrieves all panel names from PanelApp, with current panel versions.
-Usage: python panels_summary.py <output file location>
+The virtual environment must be activated before running this script (source bin/activate)
+Usage: python3 panels_summary.py <output file location>
 """
 
 import requests, json, csv, datetime, sys, os, sqlite3
@@ -39,7 +40,7 @@ writer = csv.writer(csv_file, delimiter=",")
 
 writer.writerow(['Panel Name', 'Panel ID', 'Version Number'])
 
-tot_panel_count = 0 
+tot_panel_count = 0
 v1_panel_count = 0
 v0_panel_count = 0
 
@@ -52,20 +53,20 @@ for panel in panel_list:
     	v0_panel_count +=1 # count all panels < v1.0
     elif float(curr_version_num) >=1:
     	v1_panel_count +=1 # count all panels >= v1.0
-    	    
+
 # write the panel name, id and version number to a csv file
     row = [panel_name,panel_id,curr_version_num]
     writer.writerow(row)
-    
+
 # create a connection to the specified SQLite database
 conn = sqlite3.connect("outputs/PanelApp_Data.db")
 cur = conn.cursor()
 
 # create a table in the database if it does not already exist
 #try:
-#    cur.execute("CREATE TABLE IF NOT EXISTS panelapp_summary (Date TEXT, Total_Panels TEXT, v0_Total TEXT, v1_Total TEXT)") 
+#    cur.execute("CREATE TABLE IF NOT EXISTS panelapp_summary (Date TEXT, Total_Panels TEXT, v0_Total TEXT, v1_Total TEXT)")
 #except:
-#    print("Cannot create table. It may already exist. Program will now end.") 
+#    print("Cannot create table. It may already exist. Program will now end.")
 #    sys.exit()
 
 # save the panel counts into database table

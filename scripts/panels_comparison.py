@@ -4,9 +4,8 @@ Version: 1.0
 Release Date:  15/08/17
 Author: VFryer (verity.fryer@nhs.net)
 The following code compares data from two datasets (different timestamps) to generate Excel spreadsheets containinyg the details of comparisons.
-N.B. Activate the virtual environment with: source panelapp_queries/bin/activate
-Python3 must be running for this script.
-Usage: python panels_comparison.py <output file location>
+N.B. Activate the virtual environment with: source bin/activate
+Usage: python3 panels_comparison.py <output file location>
 """
 
 import requests, csv, datetime, sys, os
@@ -309,4 +308,3 @@ print("\nComparison data is now available in \\outputs")
 
 cur.close()
 conn.close()
-
