@@ -1,12 +1,15 @@
 # Author Verity Fryer verity.fryer@nhs.net
 
-import pandas as pd, requests, sqlite3
+import pandas as pd, requests, sqlite3, sys
 from bs4 import BeautifulSoup
 
 # create a connection to the specified SQlite database
-conn = sqlite3.connect("outputs/PanelApp_Data_test.db")
+conn = sqlite3.connect("outputs/PanelApp_Data.db")
 cur = conn.cursor()
 
+outpath = sys.argv[1]
+
+'''
 #try:
 #    cur.execute(
 #        "CREATE TABLE IF NOT EXISTS panelapp_activity (Date TEXT, Panel TEXT, Gene TEXT, Activity TEXT)") 
@@ -21,7 +24,7 @@ r = requests.get(url)
 data = r.text
 soup = BeautifulSoup(data, 'lxml')
 
-# finr the first table in the webpage
+# find the first table in the webpage
 table = soup.find_all('table')[0]
 
 # find the first rows (skip the first two rows which are table filters and contain no data)
@@ -49,11 +52,18 @@ df2['Activity'] = df2['Activity'].str.strip()
 # Add new dataframe to existing datframe
 # Keep only values in new dataframe that are not duplicates
 new_entries_df = df.append(df2, ignore_index=True).drop_duplicates(keep=False)
-	
+
 # Save only new data to database
 new_entries_df.to_sql('panelapp_activity',conn,index=False,if_exists='append')
-
+'''
 # Input date range of interest
+
+# return all activity from 15 Aug 2017
+df3 = pd.read_sql("SELECT * FROM panelapp_activity WHERE Date LIKE '15 Aug 2017'", conn) #(str(date) + '%',))
+df3 = df3.set_index('Date')
+print(df3)
+df3 = df3.to_csv(outpath+"activity_15-08-17",header=['Panel','Gene','Activity'])
+
 # Return number of reviewers within date range
 # Return number of reviews per reviewer within date range
 # Plot graph of number of reviews per reviewer within date range
