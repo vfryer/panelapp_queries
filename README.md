@@ -14,15 +14,15 @@ N.B. all of these can be imported using the virtual environement packaged here b
 
 # Scripts and usage
 
-**__Script title: panels_summary.py__**
+## Script title: panels_summary.py
 Standalone script that can be run at any time to retrieve a list of all current panels, version numbers and total number of panels and total numbers of v0/v1/v2 panels.
 
-## Panels Summary Usage:
+### Usage:
 Run from in panelapp_queries directory:
 
     python3 scripts/panels_summary.py outputs/
 
-## Panels Summary Inputs/Outputs:
+### Inputs/Outputs:
  - Inputs
    - Location for file output in the command line request (outputs/ directory recommended as in usage example)
  - Outputs (all saved in panelapp_queries/outputs)
@@ -32,15 +32,15 @@ Run from in panelapp_queries directory:
    - backup .csv file containing Panel Name, Panel ID, Current Panel Version Number
  
  
-**__Script title: gene_status_summary.py__**
+## Script title: gene_status_summary.py
 Standalone script that can be run at any time to retrieve a list of all panel names from PanelApp, with current panel versions, gene symbols, gene status and mode of inheritance (MOI).
 
-## Gene Status Usage
+### Gene Status Usage
 Run from in panelapp_queries directory:
 
     python3 scripts/gene_status_summary.py outputs/
 
-## Gene Status Inputs/Outputs
+### Inputs/Outputs
  - Inputs
    - Location for file output in the command line request (outputs/ directory recommended as in usage example)
  - Outputs (all saved in panelapp_queries/outputs)
@@ -50,17 +50,17 @@ Run from in panelapp_queries directory:
    - backup .csv file containing data as in panelapp_info table
  
 
-**__Script title: panels_comparison.py__**
+## Script title: panels_comparison.py
 Script that can be run at any time, however, for the most recent data available, this should be run immdeiately after both panels_summary.py and gene_status_summary.py. This will allow you to select two dates for which panel and gene status information is stored within the PanelApp.db database and compare the two datasets, returning an Excel file containing the difference between these two dates.
 
-## Panels Comparison Usage
+### Usage
 Run from in panelapp_queries directory:
 
     python3 scripts/panels_comparison.py outputs/
     
 User is prompted to select dates for comparison as the program is running.
 
-## Panels Comparison Inputs/Outputs
+### Inputs/Outputs
  - Inputs
    - Location for file output in the command line request (outputs/ directory recommended as in usage example)
  - Outputs (all saved in panelapp_queries/outputs)
