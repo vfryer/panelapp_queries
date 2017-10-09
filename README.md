@@ -11,7 +11,7 @@ This code was developed as part of a coding project during an elective at Genomi
 * matplotlib
 * requests, sys, json, csv, datetime, os, sqlite3, time
 
-**N.B. all of these can be imported using the virtual environment packaged here by activating the virtual environment using command source panelapp_queries/bin/activate.**
+**N.B. all of these can be imported using the virtual environment packaged here by activating the virtual environment using command *source panelapp_queries/bin/activate*.**
 
 # Scripts and usage
 
@@ -68,20 +68,20 @@ User is prompted to select dates for comparison as the program is running.
    - panels_genes_comp_datestamp1_to_datestamp2.xlsx summary file of all differences between the two data sets (see below for details)
    
 Categories (and the selection criteria) included within the comparison Excel file are:
-     - New v1 panels (did not exist in previous month)
-     - New v0 panels (did not exist in previous month)
-     - Removed panels (existed in previous month, no longer exists)
-     - Promoted panels (previously v0 but now v1+)
-     - Updated v1 panels (previously v1+, curently a different v1+)
-     - Updated v0 panels (previously v0+, currently a different v0+)
-     - Panels with a name change
-     - New genes (Green status, new to a v1 panel since previous query)
-     - New genes (Not green, new to a v1 panel since previous query)
-     - Removed genes (Previously green status, but no longer on panel)
-     - Removed genes (Previously not green status, no longer on panel)
-     - Promoted genes (Green in v1 panels not green previously)
-     - Promoted genes (Green in v0 panels not green previously)
-     - Demoted genes (Previously green in v1 panel, no longer green)
-     - Amended mode of inheritance (for green genes in v1 panels only)
+New v1 panels (did not exist in previous month)
+*    New v0 panels (did not exist in previous month)
+*    Removed panels (existed in previous month, no longer exists)
+*    Promoted panels (previously v0 but now v1+)
+*    Updated v1 panels (previously v1+, curently a different v1+)
+*    Updated v0 panels (previously v0+, currently a different v0+)
+*    Panels with a name change
+*    New genes (Green status, new to a v1 panel since previous query)
+*    New genes (Not green, new to a v1 panel since previous query)
+*    Removed genes (Previously green status, but no longer on panel)
+*    Removed genes (Previously not green status, no longer on panel)
+*    Promoted genes (Green in v1 panels not green previously)
+*    Promoted genes (Green in v0 panels not green previously)
+*    Demoted genes (Previously green in v1 panel, no longer green)
+*    Amended mode of inheritance (for green genes in v1 panels only)
 
 It is recommended that each month, or whenever these scripts are run, the previous outputs are moved from outputs/directory into the archive or deleted.
