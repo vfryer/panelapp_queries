@@ -35,7 +35,7 @@ Run from in panelapp_queries directory:
 ## Script title: gene_status_summary.py
 Standalone script that can be run at any time to retrieve a list of all panel names from PanelApp, with current panel versions, gene symbols, gene status and mode of inheritance (MOI).
 
-### Gene Status Usage
+### Usage
 Run from in panelapp_queries directory:
 
     python3 scripts/gene_status_summary.py outputs/
