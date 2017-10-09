@@ -6,12 +6,13 @@ Coding project to query data in PanelApp.
 This code was developed as part of a coding project during an elective at Genomics England. This code is designed to retrieve current data from PanelApp (https://bioinfo.extge.co.uk/crowdsourcing/PanelApp/) using the webservices API (https://bioinfo.extge.co.uk/crowdsourcing/PanelApp/#!HowTo) and store this data into a SQLite database (PanelApp_data.db). The data retrieved includes panel name, panel id, current panel version and the all of the genes listed in each panel plus the current status of the gene in each panel.The code will also generate some figures and summary tables of the data and compare one data capture against another, thereby alerting the user to what changes have occurred to which genes/panels over a particular time period. 
 
 # Prerequisites:
-* python 3
+* python 3.5.1
 * pandas
 * matplotlib
+* openpyxl
 * requests, sys, json, csv, datetime, os, sqlite3, time
 
-**N.B. all of these can be imported using the virtual environment packaged here by activating the virtual environment using command *source panelapp_queries/bin/activate*.**
+**N.B. all of these can be imported using the virtual environment packaged here by activating the virtual environment using command *source panelapp_queries/venv/bin/activate*.**
 
 # Scripts and usage
 
@@ -21,7 +22,7 @@ Standalone script that can be run at any time to retrieve a list of all current 
 ### Usage:
 Run from panelapp_queries directory:
 
-    python3 scripts/panels_summary.py outputs/
+    python scripts/panels_summary.py outputs/
 
 ### Inputs/Outputs:
  - Inputs
@@ -39,7 +40,7 @@ Standalone script that can be run at any time to retrieve a list of all panel na
 ### Usage
 Run from panelapp_queries directory:
 
-    python3 scripts/gene_status_summary.py outputs/
+    python scripts/gene_status_summary.py outputs/
 
 ### Inputs/Outputs
  - Inputs
@@ -57,7 +58,7 @@ Script that can be run at any time, however, for the most recent data available,
 ### Usage
 Run from panelapp_queries directory:
 
-    python3 scripts/panels_comparison.py outputs/
+    python scripts/panels_comparison.py outputs/
     
 User is prompted to select dates for comparison as the program is running.
 
