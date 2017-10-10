@@ -148,7 +148,7 @@ ax = df.plot(kind='barh',stacked=True, legend=True, color=colours,figsize=(30,30
 ax.set_title('Gene status per panel', fontsize = 30)
 ax.legend(fontsize=30)
 ax.set_xlabel("Number of genes", fontsize = 30)
-plt.xticks(rotation=90)
+#plt.xticks(rotation=90)
 ax.tick_params(axis ='x',width=(40))
 ax.set_ylabel("Panel name", fontsize = 30)
 # add gridlines to barchart
