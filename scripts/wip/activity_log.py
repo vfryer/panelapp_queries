@@ -1,4 +1,7 @@
+'''
 # Author Verity Fryer verity.fryer@nhs.net
+Usage: python scripts/activity_log.py <output file location>
+'''
 
 import pandas as pd, requests, sqlite3, sys
 from bs4 import BeautifulSoup
@@ -9,7 +12,7 @@ cur = conn.cursor()
 
 outpath = sys.argv[1]
 
-'''
+
 #try:
 #    cur.execute(
 #        "CREATE TABLE IF NOT EXISTS panelapp_activity (Date TEXT, Panel TEXT, Gene TEXT, Activity TEXT)") 
@@ -55,7 +58,7 @@ new_entries_df = df.append(df2, ignore_index=True).drop_duplicates(keep=False)
 
 # Save only new data to database
 new_entries_df.to_sql('panelapp_activity',conn,index=False,if_exists='append')
-'''
+
 # Input date range of interest
 
 # return all activity from 15 Aug 2017

@@ -1,11 +1,9 @@
 """
 Title: panels_comparison.py
-Version: 1.0
-Release Date:  15/08/17
 Author: VFryer (verity.fryer@nhs.net)
 The following code compares data from two datasets (different timestamps) to generate Excel spreadsheets containinyg the details of comparisons.
 N.B. Activate the virtual environment with: source bin/activate
-Usage: python3 panels_comparison.py <output file location>
+Usage: python panels_comparison.py <output file location>
 """
 
 import requests, csv, datetime, sys, os

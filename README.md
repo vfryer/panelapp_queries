@@ -10,6 +10,7 @@ This code was developed as part of a coding project during an elective at Genomi
 * pandas
 * matplotlib
 * openpyxl
+* lxml
 * requests, sys, json, csv, datetime, os, sqlite3, time
 
 **N.B. all of these can be imported using the virtual environment packaged here by activating the virtual environment using command *source panelapp_queries/venv/bin/activate*.**

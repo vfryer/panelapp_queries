@@ -1,13 +1,11 @@
 """
 Title: gene_status_summary.py
-Version: 1.0
-Release Date: 19/07/2017
 Author: VFryer
 The following code retrieves all panel names from PanelApp, with current panel versions, gene symbols, gene status and mode of inheritance (MOI).
 All captured data is exported into an SQLite database and a .csv (back-up for SQLite).
 User specifies the location of the back-up .csv file(outputs/archive recommended) in the command line.
 The virtual environment must be activated before running this script (source bin/activate).
-Usage: python3 scripts/gene_status_summary.py <output file location>
+Usage: python scripts/gene_status_summary.py <output file location>
 """
 
 import requests, json, csv, datetime, sys, os
