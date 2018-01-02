@@ -33,7 +33,8 @@ datestamp_spl = datestamp.split(' ')
 out_path = sys.argv[1]
 
 # retrieve a list of all panel names
-r = requests.get('https://bioinfo.extge.co.uk/crowdsourcing/WebServices/list_panels')
+#r = requests.get('https://bioinfo.extge.co.uk/crowdsourcing/WebServices/list_panels')
+r = requests.get('https://panelapp.genomicsengland.co.uk/WebServices/list_panels')
 panel_data = r.json()
 
 panel_list = panel_data["result"]
@@ -47,6 +48,7 @@ writer.writerow(['Panel Name', 'Panel ID', 'Version Number', 'Gene Name', 'Gene 
 
 panel_count = 0
 
+
 for panel in panel_list:
     panel_id = panel["Panel_Id"]
     panel_name = panel["Name"]
@@ -55,7 +57,8 @@ for panel in panel_list:
     panel_count +=1
 
     try:
-        url = 'https://bioinfo.extge.co.uk/crowdsourcing/WebServices/get_panel/' + panel_id + '/?version=' + version_num
+        #url = 'https://bioinfo.extge.co.uk/crowdsourcing/WebServices/get_panel/' + panel_id + '/?version=' + version_num
+        url = 'https://panelapp.genomicsengland.co.uk/WebServices/get_panel/' + panel_id + '/?version=' + version_num
         r = requests.get(url)
 
         panel_data = r.json()
@@ -151,7 +154,7 @@ ax.tick_params(axis ='x',width=(40))
 ax.set_ylabel("Panel name", fontsize = 30)
 # add gridlines to barchart
 ax.xaxis.grid(which='major', linewidth=1)
-plt.minorticks_on()
+#plt.minorticks_on()
 ax.xaxis.grid(which='minor', linewidth=0.5)
 fig = ax.get_figure()
 fig.tight_layout() # ensure all panel names are printed in full on the axis
@@ -166,7 +169,7 @@ def delete_data():
     for row in data:
         print(row)
 
-    cur.execute("DELETE FROM gene_status_summary WHERE Date LIKE '2017-08-21%'")
+    cur.execute("DELETE FROM gene_status_summary WHERE Date LIKE '2018-01-02%'")
     conn.commit()
 
 delete_data()
@@ -174,3 +177,4 @@ delete_data()
 
 cur.close()
 conn.close()
+

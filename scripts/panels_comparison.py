@@ -29,7 +29,6 @@ curr_version = input("\nEnter data of current PanelApp data capture in format yy
 # save today's date to use in the filename to record a snapshot of panel versions on a weekly basis
 todays_date = datetime.datetime.now().strftime("%Y-%m-%d")
 datestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-print(datestamp)
 
 #try:
 #    cur.execute(

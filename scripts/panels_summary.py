@@ -16,11 +16,12 @@ out_path = sys.argv[1]
 
 # save today's date to use in the filename to record a snapshot of panel versions on a weekly basis
 todays_date = datetime.datetime.now().strftime("%Y-%m-%d")
-print(todays_date)
+print("Date today: " + todays_date)
 
 # retrieve a list of all panel names
 try:
-    r = requests.get('https://panelapp.extge.co.uk/crowdsourcing/WebServices/list_panels')
+    #r = requests.get('https://panelapp.extge.co.uk/crowdsourcing/WebServices/list_panels')
+    r = requests.get('https://panelapp.genomicsengland.co.uk/WebServices/list_panels') 
     panel_data = r.json()
 except:
     print("No connection establshed with PanelApp")
@@ -97,3 +98,5 @@ fig.savefig(out_path + todays_date + '_panel_summary.png', bbox_inches='tight')
 # close the connection to the database
 cur.close()
 conn.close()
+
+
