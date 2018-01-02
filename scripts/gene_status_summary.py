@@ -164,12 +164,12 @@ fig.savefig(out_path + 'gene_status_summary_' + todays_date + '.png')
 def delete_data():
     # ***N.B. data deleted from SQLite DB cannot be restored!***
     #data may need to be deleted if this scrpt is run more than once on the same day as all data with the same Date will be plotted
-    cur.execute("SELECT DISTINCT Date from gene_status_summary")
+    cur.execute("SELECT DISTINCT Datestamp from panelapp_info")
     data = cur.fetchall()
     for row in data:
         print(row)
 
-    cur.execute("DELETE FROM gene_status_summary WHERE Date LIKE '2018-01-02%'")
+    cur.execute("DELETE FROM panelapp_info WHERE Datestamp LIKE '2018-01-02 16%'")
     conn.commit()
 
 delete_data()
