@@ -165,6 +165,7 @@ def new_v1_oth_genes():
 
 def del_grn_genes():
     # any 'green' genes that have been removed from any v1+ panels
+    # this needs to be any genes in a v1+ panel previously listed as green that still exists on that panel but whose gene status has changed
     cur.execute("SELECT DISTINCT panel_name, gene_symbol, gene_status, version_num FROM panelapp_info WHERE Datestamp LIKE ? AND gene_status = 'Green' AND version_num >=1 AND panel_name NOT IN(SELECT panel_name FROM panelapp_info WHERE Datestamp LIKE ?)",(prev_version+'%',curr_version+'%'))
     data = cur.fetchall()
     print("Finding retired green genes...")
