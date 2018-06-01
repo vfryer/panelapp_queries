@@ -169,7 +169,7 @@ def delete_data():
     for row in data:
         print(row)
 
-    cur.execute("DELETE FROM panelapp_info WHERE Datestamp LIKE '2018-01-02 16%'")
+    cur.execute("DELETE FROM panelapp_info WHERE Datestamp LIKE '2018-05-31 17%'")
     conn.commit()
 
 delete_data()
